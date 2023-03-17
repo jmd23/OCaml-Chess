@@ -84,22 +84,18 @@ let row_to_string row =
 
 let starting_board =
   [
-    rank_1;
-    rank_2;
-    empty_rank;
-    empty_rank;
-    empty_rank;
-    empty_rank;
-    rank_7;
     rank_8;
+    rank_7;
+    empty_rank;
+    empty_rank;
+    empty_rank;
+    empty_rank;
+    rank_2;
+    rank_1;
   ]
 
 let board_to_string (b : board) =
-  let new_b = List.rev b in
-  List.fold_left
-    (fun x y -> x ^ y)
-    "\n"
-    (List.map (fun x -> row_to_string x) new_b)
+  List.fold_left (fun x y -> x ^ y) "\n" (List.map (fun x -> row_to_string x) b)
 
 (*let full_board = board_to_string starting_board |> print_endline*)
 
@@ -108,5 +104,6 @@ let set_row j row value = List.mapi (fun a x -> if a = j then value else x) row
 let set_square i j board value =
   List.mapi (fun a x -> if a = i then set_row j x value else x) board
 
-let new_board = set_square 1 3 starting_board Empty
+let new_board = set_square 6 3 starting_board Empty
+
 (*let test = board_to_string new_board |> print_endline*)
