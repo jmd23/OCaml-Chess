@@ -14,7 +14,13 @@ lib: [
   "_build/install/default/lib/Game/game__Board.cmt"
   "_build/install/default/lib/Game/game__Board.cmti"
   "_build/install/default/lib/Game/game__Board.cmx"
+  "_build/install/default/lib/Game/game__Player.cmi"
+  "_build/install/default/lib/Game/game__Player.cmt"
+  "_build/install/default/lib/Game/game__Player.cmti"
+  "_build/install/default/lib/Game/game__Player.cmx"
   "_build/install/default/lib/Game/opam"
+  "_build/install/default/lib/Game/player.ml"
+  "_build/install/default/lib/Game/player.mli"
 ]
 libexec: [
   "_build/install/default/lib/Game/game.cmxs"

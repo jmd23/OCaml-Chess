@@ -18,7 +18,13 @@
    game__Board.cmt
    game__Board.cmti
    game__Board.cmx
-   opam))
+   game__Player.cmi
+   game__Player.cmt
+   game__Player.cmti
+   game__Player.cmx
+   opam
+   player.ml
+   player.mli))
  (libexec (game.cmxs))
  (doc (README.md)))
 (library
@@ -34,7 +40,8 @@
   (wrapped
    (main_module_name Game)
    (modules
-    ((name Board) (obj_name game__Board) (visibility public) (impl) (intf)))
+    ((name Board) (obj_name game__Board) (visibility public) (impl) (intf))
+    ((name Player) (obj_name game__Player) (visibility public) (impl) (intf)))
    (alias_module
     (name Game)
     (obj_name game)

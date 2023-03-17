@@ -2,3 +2,6 @@
 
 (** @canonical Game.Board *)
 module Board = Game__Board
+
+(** @canonical Game.Player *)
+module Player = Game__Player

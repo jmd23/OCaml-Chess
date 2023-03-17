@@ -34,7 +34,8 @@ let rec prompt_user board () =
         print_endline (string_of_int (List.nth lst 0));
         let new_board = change_board_from_indeces board lst in
         prompt_user new_board ())
-      else print_endline "Invalid input"
+      else print_endline "Invalid input";
+      prompt_user board ()
 
 let main () =
   print_endline "\n\nWelcome to Our Game of Chess!";
