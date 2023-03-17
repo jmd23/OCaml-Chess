@@ -1,15 +1,9 @@
 # dune exec bin/main.exe
 # OCAMLPARAM: unset
 # Shared cache: disabled
-<<<<<<< HEAD
-# Workspace root: /home/custos/cs3110/final-project
-# Auto-detected concurrency: 16
-$ /home/custos/.opam/cs3110-2023sp/bin/ocamlc.opt -config > /tmp/dune_3b2031_output
-=======
 # Workspace root: "/Users/joshdeleeuw/CS 3110/3110-final-project"
 # Auto-detected concurrency: 8
-$ /Users/joshdeleeuw/.opam/cs3110-2023sp/bin/ocamlc.opt -config > /var/folders/w_/lzm0xchs3dj3n5b1hqj87n0c0000gn/T/dune_4bd0a3_output
->>>>>>> 2032cd646af70e54221ac6d5b2a7779c8425a80d
+$ /Users/joshdeleeuw/.opam/cs3110-2023sp/bin/ocamlc.opt -config > /var/folders/w_/lzm0xchs3dj3n5b1hqj87n0c0000gn/T/dune_a9ff63_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"

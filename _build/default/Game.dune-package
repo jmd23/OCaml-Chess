@@ -1,4 +1,4 @@
-(lang dune 3.7)
+(lang dune 3.6)
 (name Game)
 (sections (lib .) (libexec .) (doc ../../doc/Game))
 (files
@@ -18,13 +18,7 @@
    game__Board.cmt
    game__Board.cmti
    game__Board.cmx
-   game__Ui.cmi
-   game__Ui.cmt
-   game__Ui.cmti
-   game__Ui.cmx
-   opam
-   ui.ml
-   ui.mli))
+   opam))
  (libexec (game.cmxs))
  (doc (README.md)))
 (library
@@ -38,20 +32,13 @@
  (modes byte native)
  (modules
   (wrapped
-   (group
-    (alias
-     (obj_name game)
-     (visibility public)
-     (kind alias)
-     (source (path Game) (impl (path game.ml-gen))))
+   (main_module_name Game)
+   (modules
+    ((name Board) (obj_name game__Board) (visibility public) (impl) (intf)))
+   (alias_module
     (name Game)
-    (modules
-     (module
-      (obj_name game__Board)
-      (visibility public)
-      (source (path Board) (intf (path board.mli)) (impl (path board.ml))))
-     (module
-      (obj_name game__Ui)
-      (visibility public)
-      (source (path Ui) (intf (path ui.mli)) (impl (path ui.ml))))))
+    (obj_name game)
+    (visibility public)
+    (kind alias)
+    (impl))
    (wrapped true))))

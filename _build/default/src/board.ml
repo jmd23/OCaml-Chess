@@ -104,6 +104,7 @@ let set_row j row value = List.mapi (fun a x -> if a = j then value else x) row
 let set_square i j board value =
   List.mapi (fun a x -> if a = i then set_row j x value else x) board
 
-let new_board = set_square 6 3 starting_board Empty
+let get_square board i j = List.nth (List.nth board i) j
+let board = set_square 6 3 starting_board Empty
 
 (*let test = board_to_string new_board |> print_endline*)
