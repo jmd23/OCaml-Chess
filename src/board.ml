@@ -77,12 +77,12 @@ let print_square = function
   | Piece p -> piece_to_string p
 
 let row_to_string i row =
-  "  _________________\n"
+  "   _________________________\n"
   ^ List.fold_left
-      (fun x y -> x ^ "|" ^ y)
+      (fun x y -> x ^ " |" ^ y)
       (string_of_int (8 - i) ^ " ")
       (List.map (fun p -> print_square p) row)
-  ^ "|\n"
+  ^ " |\n"
 
 let starting_board =
   [
