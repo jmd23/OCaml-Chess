@@ -1,4 +1,4 @@
-(lang dune 3.6)
+(lang dune 3.7)
 (name Game)
 (sections (lib .) (libexec .) (doc ../../doc/Game))
 (files
@@ -6,6 +6,8 @@
   (META
    board.ml
    board.mli
+   commands.ml
+   commands.mli
    dune-package
    game.a
    game.cma
@@ -18,6 +20,10 @@
    game__Board.cmt
    game__Board.cmti
    game__Board.cmx
+   game__Commands.cmi
+   game__Commands.cmt
+   game__Commands.cmti
+   game__Commands.cmx
    game__Player.cmi
    game__Player.cmt
    game__Player.cmti
@@ -38,14 +44,27 @@
  (modes byte native)
  (modules
   (wrapped
-   (main_module_name Game)
-   (modules
-    ((name Board) (obj_name game__Board) (visibility public) (impl) (intf))
-    ((name Player) (obj_name game__Player) (visibility public) (impl) (intf)))
-   (alias_module
+   (group
+    (alias
+     (obj_name game)
+     (visibility public)
+     (kind alias)
+     (source (path Game) (impl (path game.ml-gen))))
     (name Game)
-    (obj_name game)
-    (visibility public)
-    (kind alias)
-    (impl))
+    (modules
+     (module
+      (obj_name game__Board)
+      (visibility public)
+      (source (path Board) (intf (path board.mli)) (impl (path board.ml))))
+     (module
+      (obj_name game__Commands)
+      (visibility public)
+      (source
+       (path Commands)
+       (intf (path commands.mli))
+       (impl (path commands.ml))))
+     (module
+      (obj_name game__Player)
+      (visibility public)
+      (source (path Player) (intf (path player.mli)) (impl (path player.ml))))))
    (wrapped true))))
