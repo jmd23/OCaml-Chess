@@ -25,3 +25,4 @@ val board_to_string : board -> string
 val set_row : int -> 'a list -> 'a -> 'a list
 val set_square : int -> int -> 'a list list -> 'a -> 'a list list
 val get_square : 'a list list -> int -> int -> 'a
+val print_board: board -> unit

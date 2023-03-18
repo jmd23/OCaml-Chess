@@ -24,7 +24,8 @@ let change_board_from_indeces board lst =
   board
 
 let rec prompt_user board () =
-  board |> board_to_string |> print_endline;
+  (* board |> board_to_string |> print_endline; *)
+  print_board board;
   print_endline "Enter next move";
   match read_line () with
   | exception End_of_file -> print_endline ""

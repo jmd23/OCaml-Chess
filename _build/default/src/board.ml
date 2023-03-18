@@ -65,7 +65,7 @@ let rank_8 =
 let empty_rank = [ Empty; Empty; Empty; Empty; Empty; Empty; Empty; Empty ]
 
 let piece_to_string = function
-  | Pawn p -> if p = White then "♙" else "♟"
+  | Pawn p -> if p = White then "♙" else "♙"
   | Bishop b -> if b = White then "♗" else "♝"
   | Knight n -> if n = White then "♘" else "♞"
   | Rook r -> if r = White then "♖" else "♜"
@@ -112,3 +112,39 @@ let set_square i j board value =
 let get_square board i j = List.nth (List.nth board i) j
 
 (*let test = board_to_string new_board |> print_endline*)
+
+let color (player : player) (pc : piece) =
+  match player with
+  | White ->
+      ANSITerminal.print_string [ ANSITerminal.blue ] (piece_to_string pc)
+  | Black ->
+      ANSITerminal.print_string [ ANSITerminal.green ] (piece_to_string pc)
+
+let print_color_piece (p : piece) =
+  match p with
+  | Pawn u -> color u (Pawn u)
+  | Knight u -> color u (Knight u)
+  | King u -> color u (King u)
+  | Queen u -> color u (Queen u)
+  | Bishop u -> color u (Bishop u)
+  | Rook u -> color u (Rook u)
+
+let print_color_square = function
+  | Empty -> print_string " "
+  | Piece p -> print_color_piece p
+
+let color_row i (row : square list) =
+  let inner x =
+    print_color_square x;
+    print_string "  | "
+  in
+
+  print_endline "  _________________________________________";
+  print_string (string_of_int (8 - i) ^ " ");
+  print_string "| ";
+  List.iter inner row;
+  print_endline ""
+
+let print_board (bd : board) =
+  print_endline "\n    A    B    C    D    E    F    G    H";
+  List.iteri color_row bd
