@@ -3,7 +3,11 @@
 # Shared cache: disabled
 # Workspace root: /home/custos/cs3110/final-project
 # Auto-detected concurrency: 16
+<<<<<<< HEAD
 $ /home/custos/.opam/cs3110-2023sp/bin/ocamlc.opt -config > /tmp/dune_a23a57_output
+=======
+$ /home/custos/.opam/cs3110-2023sp/bin/ocamlc.opt -config > /tmp/dune_c22b33_output
+>>>>>>> commands
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -113,7 +117,10 @@ $ /home/custos/.opam/cs3110-2023sp/bin/ocamlc.opt -config > /tmp/dune_a23a57_out
 #      ; windows_unicode = false
 #      }
 #  }
+<<<<<<< HEAD
 $ (cd _build/default && /home/custos/.opam/cs3110-2023sp/bin/ocamldep.opt -modules -impl src/board.ml) > _build/default/src/.game.objs/game__Board.impl.d
 $ (cd _build/default && /home/custos/.opam/cs3110-2023sp/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66..70 -warn-error -a+31 -g -I src/.game.objs/byte -I src/.game.objs/native -I /home/custos/.opam/cs3110-2023sp/lib/ANSITerminal -I /home/custos/.opam/cs3110-2023sp/lib/seq -I /home/custos/.opam/cs3110-2023sp/lib/yojson -intf-suffix .ml -no-alias-deps -opaque -open Game -o src/.game.objs/native/game__Board.cmx -c -impl src/board.ml)
 $ (cd _build/default && /home/custos/.opam/cs3110-2023sp/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66..70 -warn-error -a+31 -g -a -o src/game.cmxa src/.game.objs/native/game.cmx src/.game.objs/native/game__Player.cmx src/.game.objs/native/game__Board.cmx)
 $ (cd _build/default && /home/custos/.opam/cs3110-2023sp/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66..70 -warn-error -a+31 -g -o bin/main.exe /home/custos/.opam/cs3110-2023sp/lib/ocaml/str.cmxa -I /home/custos/.opam/cs3110-2023sp/lib/ocaml /home/custos/.opam/cs3110-2023sp/lib/yojson/yojson.cmxa /home/custos/.opam/cs3110-2023sp/lib/ocaml/unix.cmxa -I /home/custos/.opam/cs3110-2023sp/lib/ocaml -I /home/custos/.opam/cs3110-2023sp/lib/ocaml /home/custos/.opam/cs3110-2023sp/lib/ANSITerminal/ANSITerminal.cmxa -I /home/custos/.opam/cs3110-2023sp/lib/ANSITerminal src/game.cmxa bin/.main.eobjs/native/dune__exe__Main.cmx)
+=======
+>>>>>>> commands

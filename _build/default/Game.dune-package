@@ -6,6 +6,8 @@
   (META
    board.ml
    board.mli
+   commands.ml
+   commands.mli
    dune-package
    game.a
    game.cma
@@ -18,6 +20,10 @@
    game__Board.cmt
    game__Board.cmti
    game__Board.cmx
+   game__Commands.cmi
+   game__Commands.cmt
+   game__Commands.cmti
+   game__Commands.cmx
    game__Player.cmi
    game__Player.cmt
    game__Player.cmti
@@ -51,6 +57,16 @@
       (visibility public)
       (source (path Board) (intf (path board.mli)) (impl (path board.ml))))
      (module
+<<<<<<< HEAD
+=======
+      (obj_name game__Commands)
+      (visibility public)
+      (source
+       (path Commands)
+       (intf (path commands.mli))
+       (impl (path commands.ml))))
+     (module
+>>>>>>> commands
       (obj_name game__Player)
       (visibility public)
       (source (path Player) (intf (path player.mli)) (impl (path player.ml))))))
