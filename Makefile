@@ -1,3 +1,5 @@
+# acknowledgment: copied from a2, with some modifications
+
 .PHONY: test check
 
 build:
@@ -18,7 +20,8 @@ play:
 	OCAMLRUNPARAM=b dune exec bin/main.exe
 
 zip:
-	rm -f adventure.zip. -x@exclude.lst
+	rm -f chess.zip
+	zip -r chess.zip . -x@exclude.lst
 
 clean:
 	dune clean

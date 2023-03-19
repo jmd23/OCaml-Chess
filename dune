@@ -1,3 +1,5 @@
+;; acknowledgement: copied from a2
+
 (env
  (dev
   (flags ;; Change the compile flags to the [ocamlc] defaults

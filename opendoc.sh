@@ -1,4 +1,5 @@
 #!/bin/bash
+# acknowledgement: copied from a2
 
 LIB="Game"
 
