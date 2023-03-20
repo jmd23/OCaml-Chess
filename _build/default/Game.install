@@ -24,9 +24,15 @@ lib: [
   "_build/install/default/lib/Game/game__Player.cmt"
   "_build/install/default/lib/Game/game__Player.cmti"
   "_build/install/default/lib/Game/game__Player.cmx"
+  "_build/install/default/lib/Game/game__State.cmi"
+  "_build/install/default/lib/Game/game__State.cmt"
+  "_build/install/default/lib/Game/game__State.cmti"
+  "_build/install/default/lib/Game/game__State.cmx"
   "_build/install/default/lib/Game/opam"
   "_build/install/default/lib/Game/player.ml"
   "_build/install/default/lib/Game/player.mli"
+  "_build/install/default/lib/Game/state.ml"
+  "_build/install/default/lib/Game/state.mli"
 ]
 libexec: [
   "_build/install/default/lib/Game/game.cmxs"

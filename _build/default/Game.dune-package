@@ -28,9 +28,15 @@
    game__Player.cmt
    game__Player.cmti
    game__Player.cmx
+   game__State.cmi
+   game__State.cmt
+   game__State.cmti
+   game__State.cmx
    opam
    player.ml
-   player.mli))
+   player.mli
+   state.ml
+   state.mli))
  (libexec (game.cmxs))
  (doc (README.md)))
 (library
@@ -57,8 +63,6 @@
       (visibility public)
       (source (path Board) (intf (path board.mli)) (impl (path board.ml))))
      (module
-<<<<<<< HEAD
-=======
       (obj_name game__Commands)
       (visibility public)
       (source
@@ -66,8 +70,11 @@
        (intf (path commands.mli))
        (impl (path commands.ml))))
      (module
->>>>>>> commands
       (obj_name game__Player)
       (visibility public)
-      (source (path Player) (intf (path player.mli)) (impl (path player.ml))))))
+      (source (path Player) (intf (path player.mli)) (impl (path player.ml))))
+     (module
+      (obj_name game__State)
+      (visibility public)
+      (source (path State) (intf (path state.mli)) (impl (path state.ml))))))
    (wrapped true))))

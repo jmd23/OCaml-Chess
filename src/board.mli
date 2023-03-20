@@ -25,4 +25,16 @@ val board_to_string : board -> string
 val set_row : int -> 'a list -> 'a -> 'a list
 val set_square : int -> int -> 'a list list -> 'a -> 'a list list
 val get_square : 'a list list -> int -> int -> 'a
-val print_board: board -> unit
+val print_board : board -> unit
+
+exception Invalid_move
+exception Invalid_piece
+
+val move_piece : board -> Player.player -> int list -> board
+(** [move_piece brd plr lst] moves the player's,[plr], piece at lst[1],lst[0] on
+    board, [brd]. Returns a new board with piece at lst[4],lst[3]
+
+    - Raises [Invalid_move] if origin position specified is empty or piece
+      cannot move to new position
+
+    - Raises [Invalid_piece] if piece does not belong to [plr] *)

@@ -8,3 +8,6 @@ module Commands = Game__Commands
 
 (** @canonical Game.Player *)
 module Player = Game__Player
+
+(** @canonical Game.State *)
+module State = Game__State

@@ -1,12 +1,15 @@
-open Player
+(* open Player *)
+
+exception Invalid_move
+exception Invalid_piece
 
 type piece =
-  | Pawn of player
-  | Bishop of player
-  | Knight of player
-  | Rook of player
-  | Queen of player
-  | King of player
+  | Pawn of Player.player
+  | Bishop of Player.player
+  | Knight of Player.player
+  | Rook of Player.player
+  | Queen of Player.player
+  | King of Player.player
 
 type square =
   | Piece of piece
@@ -65,12 +68,12 @@ let rank_8 =
 let empty_rank = [ Empty; Empty; Empty; Empty; Empty; Empty; Empty; Empty ]
 
 let piece_to_string = function
-  | Pawn p -> if p = White then "♙" else "♙"
-  | Bishop b -> if b = White then "♗" else "♝"
-  | Knight n -> if n = White then "♘" else "♞"
-  | Rook r -> if r = White then "♖" else "♜"
-  | Queen q -> if q = White then "♕" else "♛"
-  | King k -> if k = White then "♔" else "♚"
+  | Pawn p -> "♙"
+  | Bishop b ->  "♗"
+  | Knight n ->  "♘"
+  | Rook r -> "♖" 
+  | Queen q ->  "♕" 
+  | King k -> "♔"
 
 let print_square = function
   | Empty -> " "
@@ -113,7 +116,7 @@ let get_square board i j = List.nth (List.nth board i) j
 
 (*let test = board_to_string new_board |> print_endline*)
 
-let color (player : player) (pc : piece) =
+let color (player : Player.player) (pc : piece) =
   match player with
   | White ->
       ANSITerminal.print_string [ ANSITerminal.blue ] (piece_to_string pc)
@@ -148,3 +151,69 @@ let color_row i (row : square list) =
 let print_board (bd : board) =
   print_endline "\n    A    B    C    D    E    F    G    H";
   List.iteri color_row bd
+
+let validate_owner (mover: Player.player) (p:piece) = 
+  match p with 
+  | Pawn plr -> mover = plr
+  | Knight plr -> mover = plr
+  | King plr -> mover = plr
+  | Queen plr -> mover = plr
+  | Rook plr -> mover = plr
+  | Bishop plr -> mover = plr
+
+
+
+(** Assuming the player moving it owns the pawn.*)
+let move_pawn (brd : board) (plr : Player.player) (lst : int list)=
+  let nth = List.nth lst in
+  let white = plr = Player.White in
+  let starting_row = ((nth 1) = 6 && plr = Player.White)  || ((nth 1) =  1 && plr = Player.Black) in
+  
+  if starting_row then
+    if (nth 0 = nth 2) (**Same column*)
+      then 
+        if (white) then
+          begin
+          if (nth 3 = 5) (** One step and empty*)
+            then  
+              let temp = set_square (nth 1) (nth 0) brd (Empty) in
+              set_square (nth 3) (nth 2) temp (Piece (Pawn plr))
+            else if (nth 3 = 4)
+              then let temp = set_square (nth 1) (nth 0) brd (Empty) in
+              set_square (nth 3) (nth 2) temp (Piece (Pawn plr))
+            else raise Invalid_move
+          end
+        else if (not white) then
+          begin
+            if (nth 3 = 2)  (** One step and empty*)
+              then  
+                let temp = set_square (nth 1) (nth 0) brd (Empty) in
+                set_square (nth 3) (nth 2) temp (Piece (Pawn plr))
+              else if (nth 3 = 3)
+                then let temp = set_square (nth 1) (nth 0) brd (Empty) in
+                set_square (nth 3) (nth 2) temp (Piece (Pawn plr))
+              else raise Invalid_move
+            end
+        else raise Invalid_move
+      else raise Invalid_move
+    else raise Invalid_move 
+
+
+  
+
+let move_piece (brd : board) (ply : Player.player) (lst : int list) : board =
+  let og_square = get_square brd (List.nth lst 1) (List.nth lst 0) in
+  match og_square with 
+  | Empty -> raise Invalid_move
+  | Piece p ->
+    if validate_owner ply p then
+    begin
+      match p with 
+      | Pawn plr -> move_pawn brd plr lst
+      | Bishop plr -> raise Invalid_move
+      | Knight plr -> raise Invalid_move
+      | Rook plr -> raise Invalid_move
+      | Queen plr -> raise Invalid_move
+      | King plr -> raise Invalid_move
+    end
+  else raise Invalid_piece
