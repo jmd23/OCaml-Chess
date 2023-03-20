@@ -28,7 +28,7 @@ let change_board_from_indeces board lst =
 
 let rec prompt_user board curr () =
   board |> board_to_string |> print_endline;
-  print_endline (string_of_player curr ^ ", its your turn. Enter a move:");
+  print_endline (string_of_player curr ^ ", it's your turn. Enter a move:");
   match read_line () with
   | exception End_of_file -> print_endline ""
   | response ->
