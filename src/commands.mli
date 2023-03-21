@@ -23,6 +23,8 @@ type command_phrase = int list
     by [Move] must not be empty*)
 type command =
   | Move of command_phrase
+  | Redo
+  | Undo
   | Quit
 
 val parse : string -> command
@@ -32,6 +34,8 @@ val parse : string -> command
       
       -  [parse "move a2 a7"] is [Move \[0;6;0;1]]
       -  [parse "quit"] is [Quit].
+      -  [parse "redo"] is [Redo]
+      -  [parse "undo"] is [Undo]
 
       Requires: [str] contains only alphanumeric (a-h, 1-8) and space characters
        (only ASCII character code 32; not tabs or newlines, etc).
@@ -39,7 +43,7 @@ val parse : string -> command
       Raises: [Empty] if [str] is the empty string or contains only spaces.
       
       Raises: [Malformed] if the command is malformed. A command is malformed if 
-        the verb is neither "quit" nor "move", or if the verb is "quit" and there is a
+        the verb is not "quit", "move","redo" or "undo", or if the verb is "quit","redo" or "undo" and there is a
         non-empty object phrase, or if the verb is "move" and there is an empty object
         phrase. 
     *)

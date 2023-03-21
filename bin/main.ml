@@ -21,35 +21,18 @@ let change_board_from_indices board lst =
 
 (* *)
 
-let rec prompt_user board () =
-  let handle_response res board =
-    let handle_command cmd board =
-      match cmd with
-      | Commands.Quit ->
-          print_endline "Quiting now";
-          exit 0
-      | Commands.Move m ->
-          let new_board = change_board_from_indices board m in
-          prompt_user new_board ()
-    in
-    try
-      let cmd = Commands.parse res in
-      handle_command cmd board
-    with
-    | Commands.Malformed ->
-        print_endline "Malformed";
-        prompt_user board ()
-    | Commands.Empty ->
-        print_endline "Empty";
-        prompt_user board ()
-  in
+(* let rec prompt_user board () = let handle_response res board = let
+   handle_command cmd board = match cmd with | Commands.Quit -> print_endline
+   "Quiting now"; exit 0 | Commands.Move m -> let new_board =
+   change_board_from_indices board m in prompt_user new_board () in try let cmd
+   = Commands.parse res in handle_command cmd board with | Commands.Malformed ->
+   print_endline "Malformed"; prompt_user board () | Commands.Empty ->
+   print_endline "Empty"; prompt_user board () in
 
-  (* board |> board_to_string |> print_endline; *)
-  Board.print_board board;
-  print_endline "Enter next move";
-  match read_line () with
-  | exception End_of_file -> print_endline ""
-  | response -> handle_response response board
+   (* board |> board_to_string |> print_endline; *) Board.print_board board;
+   print_endline "Enter next move"; match read_line () with | exception
+   End_of_file -> print_endline "" | response -> handle_response response
+   board *)
 
 let rec test_prompt st =
   let hr response st =
@@ -68,6 +51,20 @@ let rec test_prompt st =
           | State.Illegal_Piece ->
               print_endline "\n Illegal piece";
               test_prompt st)
+      | Commands.Undo -> (
+          let undo_result = State.undo st in
+          match undo_result with
+          | State.Undo_Fail ->
+              print_endline "Sorry can't undo any further.";
+              test_prompt st
+          | State.Undone s -> test_prompt s)
+      | Commands.Redo -> (
+          let redo_result = State.redo st in
+          match redo_result with
+          | State.Redo_Fail ->
+              print_endline "Cannot Redo any further";
+              test_prompt st
+          | State.Redone s -> test_prompt s)
     in
     try
       let cmd = Commands.parse response in
@@ -104,6 +101,20 @@ let testing () =
           | State.Illegal_Piece ->
               print_endline "\n Illegal piece";
               test_prompt st)
+      | Commands.Undo -> (
+          let undo_result = State.undo st in
+          match undo_result with
+          | State.Undo_Fail ->
+              print_endline "Sorry can't undo any further.";
+              test_prompt st
+          | State.Undone s -> test_prompt s)
+      | Commands.Redo -> (
+          let redo_result = State.redo st in
+          match redo_result with
+          | State.Redo_Fail ->
+              print_endline "Cannot Redo any further";
+              test_prompt st
+          | State.Redone s -> test_prompt s)
     in
     try
       let cmd = Commands.parse res in

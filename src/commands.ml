@@ -5,6 +5,8 @@ type command_phrase = int list
 
 type command =
   | Move of command_phrase
+  | Redo
+  | Undo
   | Quit
 
 let convert_helper acc str =
@@ -39,12 +41,20 @@ let make_move (strlst : string list) =
 let make_quit (strlst : string list) =
   if strlst = [] then Quit else raise Malformed
 
+let make_undo (strlst : string list) =
+  if strlst = [] then Undo else raise Malformed
+
+let make_redo (strlst : string list) =
+  if strlst = [] then Redo else raise Malformed
+
 let get_command (strlst : string list) =
   match strlst with
   | [] -> raise Empty
   | a :: b ->
       if a = "move" then make_move b
       else if a = "quit" then make_quit b
+      else if a = "undo" then make_undo b
+      else if a = "redo" then make_redo b
       else raise Malformed
 
 let parse (str : string) = str |> split_input |> get_command
