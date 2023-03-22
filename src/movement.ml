@@ -1,9 +1,8 @@
-
 exception Invalid_move
 exception Invalid_piece
 
-let validate_owner (mover: Player.player) (p:Board.piece) = 
-  match p with 
+let validate_owner (mover : Player.player) (p : Board.piece) =
+  match p with
   | Pawn plr -> mover = plr
   | Knight plr -> mover = plr
   | King plr -> mover = plr
@@ -11,29 +10,34 @@ let validate_owner (mover: Player.player) (p:Board.piece) =
   | Rook plr -> mover = plr
   | Bishop plr -> mover = plr
 
-
+(** Checks the ownership of the piece on the destination square if any to Make
+    sure a piece doesn't capture another piece on the same side. *)
+let validate_piece (brd : Board.board) (ply : Player.player) (lst : int list) =
+  let dest_square = Board.get_square brd (List.nth lst 3) (List.nth lst 2) in
+  match dest_square with
+  | Empty -> true
+  | Piece p -> not (validate_owner ply p)
 
 (** Assuming the player moving it owns the pawn.*)
-let move_pawn (brd: Board.board) (plr : Player.player) (lst : int list)=
+let move_pawn (brd : Board.board) (plr : Player.player) (lst : int list) =
   let result = Pawn.move_pawn brd plr lst in
-  match result with 
+  match result with
   | Pawn.Normal r -> r
   | Pawn.Final_row r -> r
   | Illegal -> raise Invalid_move
 
-let move_piece (brd : Board.board) (ply : Player.player) (lst : int list) : Board.board =
+let move_piece (brd : Board.board) (ply : Player.player) (lst : int list) :
+    Board.board =
   let og_square = Board.get_square brd (List.nth lst 1) (List.nth lst 0) in
-  match og_square with 
+  match og_square with
   | Empty -> raise Invalid_move
   | Piece p ->
-    if validate_owner ply p then
-    begin
-      match p with 
-      | Pawn plr -> move_pawn brd plr lst
-      | Bishop plr -> raise Invalid_move
-      | Knight plr -> raise Invalid_move
-      | Rook plr -> raise Invalid_move
-      | Queen plr -> raise Invalid_move
-      | King plr -> raise Invalid_move
-    end
-  else raise Invalid_piece
+      if validate_owner ply p && validate_piece brd ply lst then
+        match p with
+        | Pawn plr -> move_pawn brd plr lst
+        | Bishop plr -> raise Invalid_move
+        | Knight plr -> raise Invalid_move
+        | Rook plr -> raise Invalid_move
+        | Queen plr -> raise Invalid_move
+        | King plr -> raise Invalid_move
+      else raise Invalid_piece
