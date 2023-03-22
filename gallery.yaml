@@ -1,0 +1,29 @@
+---
+# Members of your group.
+group:
+  - name: Josh De Leeuw
+    netid: jmd496
+  - name: Emmanuel Dodoo 
+    netid: end25
+  - name: Alex Giang
+    netid: akg72
+  - name: Jiaxin Li
+    netid: jl2726
+# Your PM.
+pm:
+  name: Nadia Wong
+  netid: ncw37
+# Set to false if you don't want your gallery entry to be public.
+publish: true
+# Pithy title
+title: "The Ultimate Chess Game"
+# OK if this is a Cornell Github link, but public gallery viewers won't be able to see it.
+git-repo: "https://github.coecis.cornell.edu/jmd496/3110-final-project.git"
+# If you have no demo screencast, replace the url string with an empty string ""
+demo-video-url: ""
+# Write a short, attention-grabbing description of your project.
+desc: >
+  Our project is chess game playable in terminal that offeres a challenging and
+  engaging experience for players of all skill levels. Featuring smooth 
+  turn-switching and intuitive graphs, this game will allow you to play against 
+  a friend in a competition of strategies and skills. 
