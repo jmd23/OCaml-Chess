@@ -109,10 +109,10 @@ let board_to_string (b : board) =
 
 let set_row j row value = List.mapi (fun a x -> if a = j then value else x) row
 
-let set_square i j board value =
-  List.mapi (fun a x -> if a = i then set_row j x value else x) board
+let set_square i j brd value =
+  List.mapi (fun a x -> if a = i then set_row j x value else x) brd
 
-let get_square board i j = List.nth (List.nth board i) j
+let get_square brd i j = List.nth (List.nth brd i) j
 
 (*let test = board_to_string new_board |> print_endline*)
 
@@ -151,7 +151,7 @@ let color_row i (row : square list) =
 let print_board (bd : board) =
   print_endline "\n    A    B    C    D    E    F    G    H";
   List.iteri color_row bd
-
+(* 
 let validate_owner (mover: Player.player) (p:piece) = 
   match p with 
   | Pawn plr -> mover = plr
@@ -164,42 +164,12 @@ let validate_owner (mover: Player.player) (p:piece) =
 
 
 (** Assuming the player moving it owns the pawn.*)
-let move_pawn (brd : board) (plr : Player.player) (lst : int list)=
-  let nth = List.nth lst in
-  let white = plr = Player.White in
-  let starting_row = ((nth 1) = 6 && plr = Player.White)  || ((nth 1) =  1 && plr = Player.Black) in
-  
-  if starting_row then
-    if (nth 0 = nth 2) (**Same column*)
-      then 
-        if (white) then
-          begin
-          if (nth 3 = 5) (** One step and empty*)
-            then  
-              let temp = set_square (nth 1) (nth 0) brd (Empty) in
-              set_square (nth 3) (nth 2) temp (Piece (Pawn plr))
-            else if (nth 3 = 4)
-              then let temp = set_square (nth 1) (nth 0) brd (Empty) in
-              set_square (nth 3) (nth 2) temp (Piece (Pawn plr))
-            else raise Invalid_move
-          end
-        else if (not white) then
-          begin
-            if (nth 3 = 2)  (** One step and empty*)
-              then  
-                let temp = set_square (nth 1) (nth 0) brd (Empty) in
-                set_square (nth 3) (nth 2) temp (Piece (Pawn plr))
-              else if (nth 3 = 3)
-                then let temp = set_square (nth 1) (nth 0) brd (Empty) in
-                set_square (nth 3) (nth 2) temp (Piece (Pawn plr))
-              else raise Invalid_move
-            end
-        else raise Invalid_move
-      else raise Invalid_move
-    else raise Invalid_move 
-
-
-  
+let move_pawn (brd: board) (plr : Player.player) (lst : int list)=
+  let result = Pawn.move_pawn brd plr lst in
+  match result with 
+  | Pawn.Normal r -> r
+  | Pawn.Final_row r -> r
+  | Illegal -> raise Invalid_move
 
 let move_piece (brd : board) (ply : Player.player) (lst : int list) : board =
   let og_square = get_square brd (List.nth lst 1) (List.nth lst 0) in
@@ -216,4 +186,4 @@ let move_piece (brd : board) (ply : Player.player) (lst : int list) : board =
       | Queen plr -> raise Invalid_move
       | King plr -> raise Invalid_move
     end
-  else raise Invalid_piece
+  else raise Invalid_piece *)

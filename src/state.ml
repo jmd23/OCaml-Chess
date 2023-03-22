@@ -94,12 +94,12 @@ let get_current_player (st : state) = st.current_player
 
 let make_move (st : state) (lst : int list) =
   try
-    let new_board = Board.move_piece st.current_board st.current_player lst in
+    let new_board = Movement.move_piece st.current_board st.current_player lst in
     let new_state = advance_state st new_board in
     Legal new_state
   with
-  | Board.Invalid_move -> Illegal_Move
-  | Board.Invalid_piece -> Illegal_Piece
+  | Movement.Invalid_move -> Illegal_Move
+  | Movement.Invalid_piece -> Illegal_Piece
 
 let undo (st : state) =
   if st.past_boards = [] then Undo_Fail else Undone (undo_state st)
