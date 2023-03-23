@@ -1,6 +1,7 @@
 Our project so far does not use any external libraries or packages. Simply 
-follow the directions in the textbook to install OPAM and create a switch.
+follow the directions in the textbook to install OPAM and create a switch, with
+the OCaml compiler.
 
 Navigate to the main directory, then run make build, followed by make play, 
 to see the user interface for the game. You will enter moves such as "e2 e4"
-to move the pieces.
+to move the pieces, or "quit" to exit the game.
