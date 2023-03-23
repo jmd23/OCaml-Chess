@@ -16,7 +16,7 @@ let parse_input (inp : string) =
 let validate_response res =
   if res = "quit" then exit 0
   else
-    let re = Str.regexp "^\\([a-h][1-8] \\)*[a-h][1-8]$" in
+    let re = Str.regexp "^[a-h][1-8] [a-h][1-8]$" in
     Str.string_match re res 0
 
 (* *)
