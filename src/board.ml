@@ -1,8 +1,5 @@
 (* open Player *)
 
-exception Invalid_move
-exception Invalid_piece
-
 type piece =
   | Pawn of Player.player
   | Bishop of Player.player
