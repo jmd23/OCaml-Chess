@@ -63,6 +63,11 @@ let validate (brd : Board.board) (ply : Player.player) (lst : int list)
     validator =
   if validator brd ply lst then move_piece brd lst else raise Invalid_move
 
+(** Move validator for Queen. Depends on validators of both Bishop and Rook*)
+let validate_queen_move (brd: Board.board) (ply: Player.player) (lst: int list) =
+  Bishop.validate_bishop_move brd ply lst || Rook.validate_rook_move brd ply lst
+  
+  
 (** Ensures destination can be moved to and then
      matches each piece with it's appropriate decision tree*)
 let handle_piece (brd : Board.board) (ply : Player.player) (piece : Board.piece)
@@ -75,7 +80,7 @@ let handle_piece (brd : Board.board) (ply : Player.player) (piece : Board.piece)
     | Bishop plr -> partial_val Bishop.validate_bishop_move
     | Knight plr -> partial_val Knight.validate_knight_move
     | Rook plr -> partial_val Rook.validate_rook_move
-    | Queen plr -> raise Invalid_move
+    | Queen plr -> partial_val validate_queen_move
     | King plr -> raise Invalid_move
 
 let move (brd : Board.board) (ply : Player.player) (lst : int list) =
