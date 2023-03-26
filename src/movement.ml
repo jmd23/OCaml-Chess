@@ -65,6 +65,10 @@ let move_bishop (brd : Board.board) (plr : Player.player) (lst : int list) =
   if Bishop.validate_bishop_move brd plr lst then move_piece brd lst
   else raise Invalid_move
 
+let move_rook (brd : Board.board) (plr : Player.player) (lst : int list) =
+  if Rook.validate_rook_move brd plr lst then move_piece brd lst
+  else raise Invalid_move
+
 (** Matches each piece with it's appropriate decision tree*)
 let handle_piece (brd : Board.board) (ply : Player.player) (piece : Board.piece)
     (lst : int list) =
@@ -72,7 +76,7 @@ let handle_piece (brd : Board.board) (ply : Player.player) (piece : Board.piece)
   | Pawn plr -> move_pawn brd plr lst
   | Bishop plr -> move_bishop brd plr lst
   | Knight plr -> raise Invalid_move
-  | Rook plr -> raise Invalid_move
+  | Rook plr -> move_rook brd plr lst
   | Queen plr -> raise Invalid_move
   | King plr -> raise Invalid_move
 
