@@ -58,3 +58,6 @@ let get_command (strlst : string list) =
       else raise Malformed
 
 let parse (str : string) = str |> split_input |> get_command
+
+(* let debug (cmd:command) = match cmd with | Move c -> String.concat ","
+   (List.map string_of_int c) | _ -> raise Malformed *)

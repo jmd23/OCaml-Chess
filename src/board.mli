@@ -29,4 +29,3 @@ val print_board : board -> unit
 
 exception Invalid_move
 exception Invalid_piece
-

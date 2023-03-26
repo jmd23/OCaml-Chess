@@ -47,3 +47,4 @@ val parse : string -> command
         non-empty object phrase, or if the verb is "move" and there is an empty object
         phrase. 
     *)
+(* val debug: command -> string *)
