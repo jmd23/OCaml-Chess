@@ -57,26 +57,26 @@ let move_piece brd lst =
       in
       Captured (nbrd, p)
 
-(** Validates the move of a piece using a given validator. Returns the result of 
+(** Validates the move of a piece using a given validator. Returns the result of
     moving piece*)
-let validate (brd:Board.board) (ply: Player.player) (lst: int list) validator =
-  if validator brd ply lst then
-    move_piece brd lst
-  else
-    raise Invalid_move
+let validate (brd : Board.board) (ply : Player.player) (lst : int list)
+    validator =
+  if validator brd ply lst then move_piece brd lst else raise Invalid_move
 
-
-(** Matches each piece with it's appropriate decision tree*)
+(** Ensures destination can be moved to and then
+     matches each piece with it's appropriate decision tree*)
 let handle_piece (brd : Board.board) (ply : Player.player) (piece : Board.piece)
     (lst : int list) =
+  if not (validate_destination_piece brd ply lst) then raise Invalid_move
+  else
     let partial_val = validate brd ply lst in
-  match piece with
-  | Pawn plr -> partial_val Pawn.validate_pawn_move
-  | Bishop plr -> partial_val Bishop.validate_bishop_move
-  | Knight plr -> partial_val Knight.validate_knight_move
-  | Rook plr -> partial_val Rook.validate_rook_move
-  | Queen plr -> raise Invalid_move
-  | King plr -> raise Invalid_move
+    match piece with
+    | Pawn plr -> partial_val Pawn.validate_pawn_move
+    | Bishop plr -> partial_val Bishop.validate_bishop_move
+    | Knight plr -> partial_val Knight.validate_knight_move
+    | Rook plr -> partial_val Rook.validate_rook_move
+    | Queen plr -> raise Invalid_move
+    | King plr -> raise Invalid_move
 
 let move (brd : Board.board) (ply : Player.player) (lst : int list) =
   (*Check if the co-ordinates are valid.*)
@@ -89,8 +89,6 @@ let move (brd : Board.board) (ply : Player.player) (lst : int list) =
     | Empty -> raise Invalid_move
     | Piece p ->
         if validate_owner ply p then
-          if validate_destination_piece brd ply lst then
             handle_piece brd ply p lst
-          else raise Invalid_move
         else raise Invalid_piece
   else raise Invalid_move
