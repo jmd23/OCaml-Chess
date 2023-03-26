@@ -1,12 +1,12 @@
-open Player
+(* open Player *)
 
 type piece =
-  | Pawn of player
-  | Bishop of player
-  | Knight of player
-  | Rook of player
-  | Queen of player
-  | King of player
+  | Pawn of Player.player
+  | Bishop of Player.player
+  | Knight of Player.player
+  | Rook of Player.player
+  | Queen of Player.player
+  | King of Player.player
 
 type square =
   | Piece of piece
@@ -65,12 +65,12 @@ let rank_8 =
 let empty_rank = [ Empty; Empty; Empty; Empty; Empty; Empty; Empty; Empty ]
 
 let piece_to_string = function
-  | Pawn p -> if p = White then "♙" else "♟"
-  | Bishop b -> if b = White then "♗" else "♝"
-  | Knight n -> if n = White then "♘" else "♞"
-  | Rook r -> if r = White then "♖" else "♜"
-  | Queen q -> if q = White then "♕" else "♛"
-  | King k -> if k = White then "♔" else "♚"
+  | Pawn p -> "♙"
+  | Bishop b -> "♗"
+  | Knight n -> "♘"
+  | Rook r -> "♖"
+  | Queen q -> "♕"
+  | King k -> "♔"
 
 let print_square = function
   | Empty -> " "
@@ -106,9 +106,45 @@ let board_to_string (b : board) =
 
 let set_row j row value = List.mapi (fun a x -> if a = j then value else x) row
 
-let set_square i j board value =
-  List.mapi (fun a x -> if a = i then set_row j x value else x) board
+let set_square i j brd value =
+  List.mapi (fun a x -> if a = i then set_row j x value else x) brd
 
-let get_square board i j = List.nth (List.nth board i) j
+let get_square brd i j = List.nth (List.nth brd i) j
 
 (*let test = board_to_string new_board |> print_endline*)
+
+let color (player : Player.player) (pc : piece) =
+  match player with
+  | White ->
+      ANSITerminal.print_string [ ANSITerminal.blue ] (piece_to_string pc)
+  | Black ->
+      ANSITerminal.print_string [ ANSITerminal.green ] (piece_to_string pc)
+
+let print_color_piece (p : piece) =
+  match p with
+  | Pawn u -> color u (Pawn u)
+  | Knight u -> color u (Knight u)
+  | King u -> color u (King u)
+  | Queen u -> color u (Queen u)
+  | Bishop u -> color u (Bishop u)
+  | Rook u -> color u (Rook u)
+
+let print_color_square = function
+  | Empty -> print_string " "
+  | Piece p -> print_color_piece p
+
+let color_row i (row : square list) =
+  let inner x =
+    print_color_square x;
+    print_string "  | "
+  in
+
+  print_endline "  _________________________________________";
+  print_string (string_of_int (8 - i) ^ " ");
+  print_string "| ";
+  List.iter inner row;
+  print_endline ""
+
+let print_board (bd : board) =
+  print_endline "\n    A    B    C    D    E    F    G    H";
+  List.iteri color_row bd
