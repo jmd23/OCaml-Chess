@@ -57,30 +57,24 @@ let move_piece brd lst =
       in
       Captured (nbrd, p)
 
-let move_pawn (brd : Board.board) (plr : Player.player) (lst : int list) =
-  if Pawn.validate_pawn_move brd plr lst then move_piece brd lst
-  else raise Invalid_move
+(** Validates the move of a piece using a given validator. Returns the result of 
+    moving piece*)
+let validate (brd:Board.board) (ply: Player.player) (lst: int list) validator =
+  if validator brd ply lst then
+    move_piece brd lst
+  else
+    raise Invalid_move
 
-let move_bishop (brd : Board.board) (plr : Player.player) (lst : int list) =
-  if Bishop.validate_bishop_move brd plr lst then move_piece brd lst
-  else raise Invalid_move
-
-let move_rook (brd : Board.board) (plr : Player.player) (lst : int list) =
-  if Rook.validate_rook_move brd plr lst then move_piece brd lst
-  else raise Invalid_move
-
-let move_knight (brd : Board.board) (plr : Player.player) (lst : int list) =
-  if Knight.validate_knight_move brd plr lst then move_piece brd lst
-  else raise Invalid_move
 
 (** Matches each piece with it's appropriate decision tree*)
 let handle_piece (brd : Board.board) (ply : Player.player) (piece : Board.piece)
     (lst : int list) =
+    let partial_val = validate brd ply lst in
   match piece with
-  | Pawn plr -> move_pawn brd plr lst
-  | Bishop plr -> move_bishop brd plr lst
-  | Knight plr -> move_knight brd plr lst
-  | Rook plr -> move_rook brd plr lst
+  | Pawn plr -> partial_val Pawn.validate_pawn_move
+  | Bishop plr -> partial_val Bishop.validate_bishop_move
+  | Knight plr -> partial_val Knight.validate_knight_move
+  | Rook plr -> partial_val Rook.validate_rook_move
   | Queen plr -> raise Invalid_move
   | King plr -> raise Invalid_move
 
