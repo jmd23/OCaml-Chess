@@ -1,6 +1,5 @@
 open Game
 
-
 let rec test_prompt st =
   let hr response st =
     let handle_command cmd st =
@@ -46,7 +45,9 @@ let rec test_prompt st =
   in
 
   Board.print_board (State.get_current_board st);
-  print_endline "\n Next move";
+  let player = State.get_current_player st in
+  print_endline
+    ("\n" ^ Player.string_of_player player ^ ", it is your turn. Enter a move");
   match read_line () with
   | exception End_of_file -> print_endline "Prompt end of file"
   | response -> hr response st
@@ -97,7 +98,8 @@ let testing () =
 
   let game_state = State.init_state () in
   Board.print_board (State.get_current_board game_state);
-  print_endline "\n Beginning move";
+  print_endline
+    "\n White, you start the game. Enter a move such as 'move e2 e4'";
   match read_line () with
   | exception End_of_file -> print_endline "End of file"
   | response -> handle_response response game_state

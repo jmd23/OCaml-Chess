@@ -64,12 +64,12 @@ let validate (brd : Board.board) (ply : Player.player) (lst : int list)
   if validator brd ply lst then move_piece brd lst else raise Invalid_move
 
 (** Move validator for Queen. Depends on validators of both Bishop and Rook*)
-let validate_queen_move (brd: Board.board) (ply: Player.player) (lst: int list) =
+let validate_queen_move (brd : Board.board) (ply : Player.player)
+    (lst : int list) =
   Bishop.validate_bishop_move brd ply lst || Rook.validate_rook_move brd ply lst
-  
-  
-(** Ensures destination can be moved to and then
-     matches each piece with it's appropriate decision tree*)
+
+(** Ensures destination can be moved to and then matches each piece with it's
+    appropriate decision tree*)
 let handle_piece (brd : Board.board) (ply : Player.player) (piece : Board.piece)
     (lst : int list) =
   if not (validate_destination_piece brd ply lst) then raise Invalid_move
@@ -93,7 +93,6 @@ let move (brd : Board.board) (ply : Player.player) (lst : int list) =
     match origin_square with
     | Empty -> raise Invalid_move
     | Piece p ->
-        if validate_owner ply p then
-            handle_piece brd ply p lst
+        if validate_owner ply p then handle_piece brd ply p lst
         else raise Invalid_piece
   else raise Invalid_move
