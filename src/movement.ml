@@ -81,7 +81,7 @@ let handle_piece (brd : Board.board) (ply : Player.player) (piece : Board.piece)
     | Knight plr -> partial_val Knight.validate_knight_move
     | Rook plr -> partial_val Rook.validate_rook_move
     | Queen plr -> partial_val validate_queen_move
-    | King plr -> raise Invalid_move
+    | King plr -> partial_val King.validate_king_move
 
 let move (brd : Board.board) (ply : Player.player) (lst : int list) =
   (*Check if the co-ordinates are valid.*)
