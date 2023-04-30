@@ -53,3 +53,5 @@ val get_square : 'a list list -> int -> int -> 'a
 val print_board : board -> unit
 (** [print_board brd] prints brd to the standard output with visually distinct
     colors for each player's pieces*)
+
+val validate_owner : Player.player -> piece -> bool

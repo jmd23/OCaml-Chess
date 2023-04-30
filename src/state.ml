@@ -131,13 +131,79 @@ let init_state () =
 let get_current_board (st : state) = st.current_board
 let get_current_player (st : state) = st.current_player
 
+let can_not_move (b : Board.board) (p : Player.player) (lst : int list) =
+  try
+    let move = Movement.move b p lst in
+    match move with
+    | Movement.Normal brd -> false
+    | Movement.Captured pair -> false
+  with
+  | Movement.Invalid_move -> true
+  | Movement.Invalid_piece -> true
+
+let rec king_in_row (r : Board.square list) (p : Player.player) =
+  match r with
+  | [] -> false
+  | h :: t -> (
+      match h with
+      | Empty -> king_in_row t p
+      | Piece pi -> (
+          match pi with
+          | King plr -> if plr = p then true else king_in_row t p
+          | _ -> king_in_row t p))
+
+(*Precondition: king in row r*)
+let rec pos_king_in_row (r : Board.square list) (p : Player.player) (n : int) =
+  match r with
+  | [] -> failwith "violates precondition"
+  | h :: t -> (
+      match h with
+      | Empty -> pos_king_in_row t p (n + 1)
+      | Piece pi -> (
+          match pi with
+          | King plr -> if plr = p then n else pos_king_in_row t p (n + 1)
+          | _ -> pos_king_in_row t p (n + 1)))
+
+let rec find_king (p : Player.player) (b : Board.board) (i : int) =
+  match b with
+  | [] -> failwith "King not on board"
+  | h :: t ->
+      if king_in_row h p then (i, pos_king_in_row h p 0)
+      else find_king p t (i + 1)
+
+let rec row_does_not_hit_king (p : Player.player) (b : Board.board)
+    (king_pos : int * int) (r : int) =
+  let kr, kc = king_pos in
+  List.for_all
+    (fun x -> can_not_move b p [ x; r; kc; kr ])
+    [ 0; 1; 2; 3; 4; 5; 6; 7 ]
+
+let board_does_not_hit_king (pos : int * int) (p : Player.player)
+    (b : Board.board) =
+  List.for_all
+    (fun x -> row_does_not_hit_king p b pos x)
+    [ 0; 1; 2; 3; 4; 5; 6; 7 ]
+
+let in_check (st : state) (p : Player.player) (b : Board.board) =
+  let r, c = find_king p b 0 in
+  let other = if p = Player.White then Player.Black else Player.White in
+  let res = not (board_does_not_hit_king (r, c) other st.current_board) in
+  res
+
 let make_move (st : state) (lst : int list) =
   try
     let move = Movement.move st.current_board st.current_player lst in
     match move with
-    | Movement.Normal brd -> Legal (advance_state st brd None)
+    | Movement.Normal brd ->
+        let new_st = advance_state st brd None in
+        let check = in_check new_st st.current_player st.current_board in
+        if check then Illegal_Move else Legal new_st
     | Movement.Captured pair ->
-        Legal (advance_state st (get_first pair) (Some (get_second pair)))
+        let new_st =
+          advance_state st (get_first pair) (Some (get_second pair))
+        in
+        let check = in_check new_st st.current_player st.current_board in
+        if check then Illegal_Move else Legal new_st
   with
   | Movement.Invalid_move -> Illegal_Move
   | Movement.Invalid_piece -> Illegal_Piece
