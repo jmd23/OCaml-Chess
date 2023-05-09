@@ -27,6 +27,10 @@ let print_board_test (name : string) (board : Board.board)
     (expected_output : unit) : test =
   name >:: fun _ -> assert_equal expected_output (Board.print_board board)
 
+let validate_owner_test (name : string) (plr : Player.player) (p : Board.piece)
+    (expected_output : bool) : test =
+  name >:: fun _ -> assert_equal expected_output (Board.validate_owner plr p)
+
 (* -------------------Movement Tests---------------------- *)
 let move_test (name : string) (board : Board.board) (plr : Player.player)
     (lst : int list) (expected_output : Movement.result) : test =
@@ -92,6 +96,13 @@ let black_capture_test (name : string) st (st : State.state)
   name >:: fun _ -> assert_equal expected_output (State.get_black_captured st)
 
 (* undo/redo *)
+let undo_test (name : string) st (st : State.state)
+    (expected_output : State.undo_result) : test =
+  name >:: fun _ -> assert_equal expected_output (State.undo st)
+
+let redo_test (name : string) st (st : State.state)
+    (expected_output : State.redo_result) : test =
+  name >:: fun _ -> assert_equal expected_output (State.redo st)
 
 (* -------------------Pieces Tests---------------------- *)
 
@@ -112,6 +123,24 @@ let rook_valid_test (name : string) (board : Board.board) (plr : Player.player)
     (lst : int list) (expected_output : bool) : test =
   name >:: fun _ ->
   assert_equal expected_output (Rook.validate_rook_move board plr lst)
+
+(* bishop *)
+let bishop_valid_test (name : string) (board : Board.board)
+    (plr : Player.player) (lst : int list) (expected_output : bool) : test =
+  name >:: fun _ ->
+  assert_equal expected_output (Bishop.validate_bishop_move board plr lst)
+
+(* king *)
+let king_valid_test (name : string) (board : Board.board) (plr : Player.player)
+    (lst : int list) (expected_output : bool) : test =
+  name >:: fun _ ->
+  assert_equal expected_output (King.validate_king_move board plr lst)
+
+(* -------------------Commands Tests---------------------- *)
+
+let parse_test (name : string) (s : string) (expected_output : Commands.command)
+    : test =
+  name >:: fun _ -> assert_equal expected_output (Commands.parse s)
 
 let suite = "test suite for project" >::: List.flatten []
 let _ = run_test_tt_main suite
