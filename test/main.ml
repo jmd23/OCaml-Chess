@@ -44,6 +44,56 @@ let string_of_player_test (name : string) (player : Player.player)
 
 (* -------------------State Tests---------------------- *)
 
+exception Illegal_M
+exception Illegal_P
+
+let get_state res =
+  match res with
+  | State.Legal t -> t
+  | State.Illegal_Move -> raise Illegal_M
+  | State.Illegal_Piece -> raise Illegal_P
+
+let make_move_illegalmove_test (name : string) lst (st : State.state)
+    (expected_output : State.move_result) : test =
+  name >:: fun _ -> assert_equal State.Illegal_Move (State.make_move st lst)
+
+let make_move_illegalpiece_test (name : string) lst (st : State.state)
+    (expected_output : State.move_result) : test =
+  name >:: fun _ -> assert_equal State.Illegal_Piece (State.make_move st lst)
+
+let move_one_legal (name : string) (lst : int list) (st : State.state) : test =
+  name >:: fun _ ->
+  assert_equal
+    (Board.get_square Board.starting_board (List.nth lst 1) (List.nth lst 0))
+    (Board.get_square
+       (State.get_current_board (get_state (State.make_move st lst)))
+       (List.nth lst 3) (List.nth lst 2))
+
+let move_two_legal (name : string) (lst1 : int list) (lst2 : int list)
+    (st : State.state) : test =
+  name >:: fun _ ->
+  assert_equal
+    (Board.get_square
+       (State.get_current_board (get_state (State.make_move st lst1)))
+       (List.nth lst2 1) (List.nth lst2 0))
+    (Board.get_square
+       (State.get_current_board
+          (get_state
+             (State.make_move (get_state (State.make_move st lst1)) lst2)))
+       (List.nth lst2 3) (List.nth lst2 2))
+
+(* test capture *)
+let white_capture_test (name : string) st (st : State.state)
+    (expected_output : Board.piece list) : test =
+  name >:: fun _ -> assert_equal expected_output (State.get_white_captured st)
+
+let black_capture_test (name : string) st (st : State.state)
+    (expected_output : Board.piece list) : test =
+  name >:: fun _ -> assert_equal expected_output (State.get_black_captured st)
+
+(* undo/redo *)
+let undo_test
+
 (* -------------------Pieces Tests---------------------- *)
 
 (* Knight *)
