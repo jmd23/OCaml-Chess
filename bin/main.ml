@@ -47,14 +47,26 @@ let rec promt_user st =
         print_endline "Empty";
         promt_user st
   in
-
   Board.print_board (State.get_current_board st);
-  let player = State.get_current_player st in
-  print_endline
-    ("\n" ^ Player.string_of_player player ^ ", it is your turn. Enter a move");
-  match read_line () with
-  | exception End_of_file -> print_endline "Prompt end of file"
-  | response -> hr response st
+  let in_check =
+    State.in_check st (State.get_current_player st) (State.get_current_board st)
+  in
+  let legals_exist = State.has_legal_moves st in
+  if not legals_exist then
+    if in_check then
+      print_endline
+        ("Checkmate! "
+        ^ Player.string_of_player
+            (Player.switch_player (State.get_current_player st))
+        ^ " has won!")
+    else print_endline "Stalemate! It's a draw"
+  else
+    let player = State.get_current_player st in
+    print_endline
+      ("\n" ^ Player.string_of_player player ^ ", it is your turn. Enter a move");
+    match read_line () with
+    | exception End_of_file -> print_endline "Prompt end of file"
+    | response -> hr response st
 
 let start_game () =
   let handle_response (res : string) st =

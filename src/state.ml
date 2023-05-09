@@ -196,17 +196,37 @@ let make_move (st : state) (lst : int list) =
     match move with
     | Movement.Normal brd ->
         let new_st = advance_state st brd None in
-        let check = in_check new_st st.current_player st.current_board in
+        let check = in_check new_st st.current_player new_st.current_board in
         if check then Illegal_Move else Legal new_st
     | Movement.Captured pair ->
         let new_st =
           advance_state st (get_first pair) (Some (get_second pair))
         in
-        let check = in_check new_st st.current_player st.current_board in
+        let check = in_check new_st st.current_player new_st.current_board in
         if check then Illegal_Move else Legal new_st
   with
   | Movement.Invalid_move -> Illegal_Move
   | Movement.Invalid_piece -> Illegal_Piece
+
+let legals = ref 0
+
+let count_legal_moves (st : state) =
+  legals := 0;
+  for i = 0 to 7 do
+    for j = 0 to 7 do
+      for k = 0 to 7 do
+        for l = 0 to 7 do
+          match make_move st [ i; j; k; l ] with
+          | Legal s -> legals := !legals + 1
+          | _ -> ()
+        done
+      done
+    done
+  done
+
+let has_legal_moves (st : state) =
+  count_legal_moves st;
+  !legals > 0
 
 let undo (st : state) =
   if st.past_boards = [] then Undo_Fail else Undone (undo_state st)

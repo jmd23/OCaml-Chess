@@ -40,6 +40,8 @@ val get_black_captured : state -> Board.piece list
 (** [get_black_captured st] returns all the pieces captured by [Player.Black] so
     far in the order in which they were captured.*)
 
+val in_check : state -> Player.player -> Board.board -> bool
+
 val make_move : state -> int list -> move_result
 (** [make_move st lst] is the result of attempting to move a piece on the sqaure
     specified by lst[1],lst[0] to a new position specified by lst[3], lst[2].
@@ -52,6 +54,8 @@ val make_move : state -> int list -> move_result
 
     If a move is not successful because of an invalid player piece, a
     [Illegal_Piece] is returned. *)
+
+val has_legal_moves : state -> bool
 
 val undo : state -> undo_result
 (** [undo state] is the result of attempting to undo a previous move.
