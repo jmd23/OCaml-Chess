@@ -32,8 +32,8 @@ let start_row_bd4 (lst : int list) =
   let nth = List.nth lst in
   begin
     (nth 0 = nth 2 && nth 3 - nth 1 = 1) (*Vertical*)
-    || (nth 0 = nth 2 && nth 3 - nth 1 = 2) (*Two steps up*)
-    || (nth 1 - nth 3 = 1 && nth 2 - nth 0 = 1) (*Lower-left*)
+    || (nth 0 = nth 2 && nth 3 - nth 1 = 2) (*Two steps down*)
+    || (nth 3 - nth 1 = 1 && nth 0 - nth 2 = 1) (*Lower-left*)
     || (nth 3 - nth 1 = 1 && nth 2 - nth 0 = 1) (*Lower-right*)
   end
 
