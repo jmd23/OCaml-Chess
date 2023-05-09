@@ -92,7 +92,6 @@ let black_capture_test (name : string) st (st : State.state)
   name >:: fun _ -> assert_equal expected_output (State.get_black_captured st)
 
 (* undo/redo *)
-let undo_test
 
 (* -------------------Pieces Tests---------------------- *)
 
