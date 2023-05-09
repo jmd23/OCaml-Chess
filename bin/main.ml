@@ -1,36 +1,40 @@
 open Game
 
-let rec test_prompt st =
+let rec promt_user st =
   let hr response st =
     let handle_command cmd st =
       match cmd with
       | Commands.Quit ->
-          print_endline "\n Quiting";
+          print_endline "\n Okay. Quiting now";
+          Unix.sleep 2;
           exit 0
       | Commands.Move m -> (
           let move_result = State.make_move st m in
           match move_result with
-          | State.Legal s -> test_prompt s
+          | State.Legal s -> promt_user s
           | State.Illegal_Move ->
-              print_endline "\nIllegal move";
-              test_prompt st
+              print_endline
+                "\nYou attempted to make an illegal move.\nTry again";
+              Unix.sleep 2;
+              promt_user st
           | State.Illegal_Piece ->
-              print_endline "\n Illegal piece";
-              test_prompt st)
+              print_endline "\nYou attempted to move a wrong piece.\nTry again";
+              Unix.sleep 2;
+              promt_user st)
       | Commands.Undo -> (
           let undo_result = State.undo st in
           match undo_result with
           | State.Undo_Fail ->
               print_endline "Sorry can't undo any further.";
-              test_prompt st
-          | State.Undone s -> test_prompt s)
+              promt_user st
+          | State.Undone s -> promt_user s)
       | Commands.Redo -> (
           let redo_result = State.redo st in
           match redo_result with
           | State.Redo_Fail ->
               print_endline "Cannot Redo any further";
-              test_prompt st
-          | State.Redone s -> test_prompt s)
+              promt_user st
+          | State.Redone s -> promt_user s)
     in
     try
       let cmd = Commands.parse response in
@@ -38,10 +42,10 @@ let rec test_prompt st =
     with
     | Commands.Malformed ->
         print_endline "Malformed";
-        test_prompt st
+        promt_user st
     | Commands.Empty ->
         print_endline "Empty";
-        test_prompt st
+        promt_user st
   in
 
   Board.print_board (State.get_current_board st);
@@ -52,48 +56,59 @@ let rec test_prompt st =
   | exception End_of_file -> print_endline "Prompt end of file"
   | response -> hr response st
 
-let testing () =
+let start_game () =
   let handle_response (res : string) st =
     let handle_command cmd st =
       match cmd with
       | Commands.Quit ->
-          print_endline "\n Quiting";
+          print_endline "\n Okay. Quiting now";
+          Unix.sleep 2;
           exit 0
       | Commands.Move m -> (
           let move_result = State.make_move st m in
           match move_result with
-          | State.Legal s -> test_prompt s
+          | State.Legal s ->
+              print_endline "Moving piece";
+              Unix.sleep 1;
+              promt_user s
           | State.Illegal_Move ->
-              print_endline "\nIllegal move";
-              test_prompt st
+              print_endline
+                "\nYou attempted to make an illegal move.\nTry again";
+              Unix.sleep 2;
+              promt_user st
           | State.Illegal_Piece ->
-              print_endline "\n Illegal piece";
-              test_prompt st)
+              print_endline "\nYou attempted to move a wrong piece.\nTry again";
+              Unix.sleep 2;
+              promt_user st)
       | Commands.Undo -> (
           let undo_result = State.undo st in
           match undo_result with
           | State.Undo_Fail ->
               print_endline "Sorry can't undo any further.";
-              test_prompt st
-          | State.Undone s -> test_prompt s)
+              Unix.sleep 2;
+              promt_user st
+          | State.Undone s -> promt_user s)
       | Commands.Redo -> (
           let redo_result = State.redo st in
           match redo_result with
           | State.Redo_Fail ->
               print_endline "Cannot Redo any further";
-              test_prompt st
-          | State.Redone s -> test_prompt s)
+              Unix.sleep 2;
+              promt_user st
+          | State.Redone s -> promt_user s)
     in
     try
       let cmd = Commands.parse res in
       handle_command cmd st
     with
     | Commands.Malformed ->
-        print_endline "Malformed";
-        test_prompt st
+        print_endline "\nSorry your input was malformed.\nPlease try again\n";
+        Unix.sleep 2;
+        promt_user st
     | Commands.Empty ->
-        print_endline "Empty";
-        test_prompt st
+        print_endline "Sorry your input was empty.\nPlease try again\n";
+        Unix.sleep 2;
+        promt_user st
   in
 
   let game_state = State.init_state () in
@@ -105,8 +120,7 @@ let testing () =
   | response -> handle_response response game_state
 
 let main () =
-  print_endline "\n\nWelcome to Our Game of Chess!";
-  (* prompt_user Board.starting_board () *)
-  testing ()
+  print_endline "\n\nWelcome to Our Game of Chess!\nWe hope you like it :)";
+  start_game ()
 
 let () = main ()
