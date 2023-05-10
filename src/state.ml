@@ -226,6 +226,7 @@ let count_legal_moves (st : state) =
 
 let has_legal_moves (st : state) =
   count_legal_moves st;
+  print_endline ("legals: " ^ string_of_int !legals);
   !legals > 0
 
 let undo (st : state) =
