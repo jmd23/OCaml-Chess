@@ -56,6 +56,7 @@ val make_move : state -> int list -> move_result
     [Illegal_Piece] is returned. *)
 
 val has_legal_moves : state -> bool
+val threefold_rep : state -> bool
 
 val undo : state -> undo_result
 (** [undo state] is the result of attempting to undo a previous move.

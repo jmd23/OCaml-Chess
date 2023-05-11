@@ -226,8 +226,19 @@ let count_legal_moves (st : state) =
 
 let has_legal_moves (st : state) =
   count_legal_moves st;
-  print_endline ("legals: " ^ string_of_int !legals);
   !legals > 0
+
+let rec num_eq_helper (curr : Board.board) (lst : Board.board list) (acc : int)
+    =
+  match lst with
+  | [] -> acc
+  | h :: t ->
+      if Board.board_equal curr h then num_eq_helper curr t (acc + 1)
+      else num_eq_helper curr t acc
+
+let threefold_rep (st : state) =
+  let past_eq = num_eq_helper st.current_board st.past_boards 0 in
+  past_eq >= 2
 
 let undo (st : state) =
   if st.past_boards = [] then Undo_Fail else Undone (undo_state st)
