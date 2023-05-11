@@ -160,3 +160,16 @@ let validate_owner (mover : Player.player) (p : piece) =
   | Queen plr -> mover = plr
   | Rook plr -> mover = plr
   | Bishop plr -> mover = plr
+
+let square_equal (a : square) (b : square) =
+  match (a, b) with
+  | Empty, Empty -> true
+  | Empty, Piece p -> false
+  | Piece p, Empty -> false
+  | Piece p1, Piece p2 -> p1 = p2
+
+let row_equal (first : square list) (second : square list) =
+  List.equal square_equal first second
+
+let board_equal (board1 : board) (board2 : board) =
+  List.equal row_equal board1 board2

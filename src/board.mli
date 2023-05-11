@@ -55,3 +55,4 @@ val print_board : board -> unit
     colors for each player's pieces*)
 
 val validate_owner : Player.player -> piece -> bool
+val board_equal : board -> board -> bool
