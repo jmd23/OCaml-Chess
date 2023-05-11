@@ -137,10 +137,16 @@ let king_valid_test (name : string) (board : Board.board) (plr : Player.player)
   assert_equal expected_output (King.validate_king_move board plr lst)
 
 (* -------------------Commands Tests---------------------- *)
+let parse_input (c : Commands.command) : string =
+  match c with
+  | Move ph -> String.concat "; " (List.map string_of_int ph)
+  | Redo -> "redo"
+  | Undo -> "undo"
+  | Quit -> "quit"
 
-let parse_test (name : string) (s : string) (expected_output : Commands.command)
-    : test =
-  name >:: fun _ -> assert_equal expected_output (Commands.parse s)
+let parse_test (name : string) (s : string) (expected_output : string) : test =
+  name >:: fun _ ->
+  assert_equal expected_output (parse_input (Commands.parse s))
 
 (* -----------------------------Specific Tests------------------------------- *)
 (* boards *)
@@ -243,5 +249,15 @@ let state_tests =
       [ 4; 6; 4; 4 ] [ 4; 1; 4; 3 ] start_state;
   ]
 
-let suite = "test suite for project" >::: List.flatten [ state_tests ]
+let parse_tests =
+  [
+    parse_test "test move" "move e2 e4" "4; 6; 4; 4";
+    parse_test "test undo" "undo" "undo";
+    parse_test "test redo" "redo" "redo";
+    parse_test "test quit" "quit" "quit";
+  ]
+
+let suite =
+  "test suite for project" >::: List.flatten [ state_tests; parse_tests ]
+
 let _ = run_test_tt_main suite
