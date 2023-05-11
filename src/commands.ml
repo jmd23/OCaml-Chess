@@ -60,7 +60,8 @@ let validate_str s =
 
     Raises a [Malformed] if [lst] is empty or an element in [lst] fails match *)
 let make_move (strlst : string list) =
-  if strlst = [] then raise Malformed
+  if List.length strlst <> 2 then raise Malformed
+  else if strlst = [] then raise Malformed
   else if List.fold_left (fun acc s -> acc && validate_str s) true strlst then
     Move (convert_to_indices strlst)
   else raise Malformed
