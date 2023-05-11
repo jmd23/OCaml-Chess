@@ -52,12 +52,16 @@ let get_state res =
   | State.Illegal_Move -> raise Illegal_M
   | State.Illegal_Piece -> raise Illegal_P
 
-let make_move_illegalmove_test (name : string) lst (st : State.state)
-    (expected_output : State.move_result) : test =
+let compare_board (name : string) lst (st : State.state)
+    (expected_output : Board.board) : test =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (State.get_current_board (get_state (State.make_move st lst)))
+
+let make_move_illegalmove_test (name : string) lst (st : State.state) : test =
   name >:: fun _ -> assert_equal State.Illegal_Move (State.make_move st lst)
 
-let make_move_illegalpiece_test (name : string) lst (st : State.state)
-    (expected_output : State.move_result) : test =
+let make_move_illegalpiece_test (name : string) lst (st : State.state) : test =
   name >:: fun _ -> assert_equal State.Illegal_Piece (State.make_move st lst)
 
 let move_one_legal_compare (name : string) (lst : int list) (st : State.state) :
@@ -220,21 +224,24 @@ let legal_board_1 =
 
 (* states *)
 let start_state = State.init_state ()
-let state_1 = get_state (State.make_move start_state [ 1; 4; 3; 4 ])
+let state_1 = get_state (State.make_move start_state [ 4; 6; 4; 5 ])
+(* [ 6; 4; 5; 4 ] *)
 
 let state_tests =
   [
-    make_move_illegalmove_test "illegal move from e1 to h6" [ 0; 4; 5; 7 ]
-      start_state State.Illegal_Move;
-    make_move_illegalmove_test "illegal piece from e8 to e3" [ 7; 4; 2; 4 ]
-      start_state State.Illegal_Piece;
-    move_one_legal_compare "make one legal move: e2 to e4" [ 1; 4; 3; 4 ]
+    compare_board "compare board e2->e4" [ 4; 6; 4; 4 ] start_state
+      legal_board_1;
+    make_move_illegalmove_test "illegal move from e1 to h6" [ 4; 7; 5; 2 ]
+      start_state;
+    make_move_illegalpiece_test "illegal piece from e8 to e3" [ 4; 0; 4; 5 ]
+      start_state;
+    move_one_legal_compare "make one legal move: e2 to e4" [ 4; 6; 4; 4 ]
       start_state;
     move_one_legal_compare "make a second legal move from e2->e4 then e7->e5"
-      [ 6; 4; 4; 4 ] state_1;
+      [ 4; 1; 4; 3 ] state_1;
     move_two_legal_compare "make two legal moves: e2->e4 then e7->e5"
-      [ 1; 4; 3; 4 ] [ 6; 4; 4; 4 ] start_state;
+      [ 4; 6; 4; 4 ] [ 4; 1; 4; 3 ] start_state;
   ]
 
-let suite = "test suite for project" >::: List.flatten []
+let suite = "test suite for project" >::: List.flatten [ state_tests ]
 let _ = run_test_tt_main suite
