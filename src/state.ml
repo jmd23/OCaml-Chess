@@ -216,6 +216,8 @@ let count_legal_moves (st : state) =
     for j = 0 to 7 do
       for k = 0 to 7 do
         for l = 0 to 7 do
+          (*print_endline (string_of_int i ^ string_of_int j ^ string_of_int k ^
+            string_of_int l);*)
           match make_move st [ i; j; k; l ] with
           | Legal s -> legals := !legals + 1
           | _ -> ()

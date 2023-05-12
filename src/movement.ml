@@ -36,9 +36,25 @@ let onBoard lst =
   && nth 3 >= 0
   && nth 3 <= 7
 
+let handle_rook brd lst ply =
+  match (List.nth lst 2, List.nth lst 3) with
+  | 6, 7 ->
+      let new_brd = Board.set_square 7 7 brd Board.Empty in
+      Board.set_square 7 5 new_brd (Board.Piece (Rook ply))
+  | 2, 7 ->
+      let new_brd = Board.set_square 7 0 brd Board.Empty in
+      Board.set_square 7 3 new_brd (Board.Piece (Rook ply))
+  | 6, 0 ->
+      let new_brd = Board.set_square 0 7 brd Board.Empty in
+      Board.set_square 0 5 new_brd (Board.Piece (Rook ply))
+  | 2, 0 ->
+      let new_brd = Board.set_square 0 0 brd Board.Empty in
+      Board.set_square 0 3 new_brd (Board.Piece (Rook ply))
+  | _ -> brd
+
 (** Performs the actual moving of the piece. Requires all appropriate checks to
     have passed. Returns a [Normal b] or [Captured]. *)
-let move_piece brd lst =
+let move_piece brd lst ply =
   let origin_square = Board.get_square brd (List.nth lst 1) (List.nth lst 0) in
   let destination_square =
     Board.get_square brd (List.nth lst 3) (List.nth lst 2)
@@ -46,22 +62,28 @@ let move_piece brd lst =
   let board =
     Board.set_square (List.nth lst 3) (List.nth lst 2) brd origin_square
   in
-
+  let res =
+    if
+      origin_square = Board.Piece (King ply)
+      && abs (List.nth lst 2 - List.nth lst 0) = 2
+    then handle_rook board lst ply
+    else board
+  in
   match destination_square with
   | Board.Empty ->
       Normal
-        (Board.set_square (List.nth lst 1) (List.nth lst 0) board Board.Empty)
+        (Board.set_square (List.nth lst 1) (List.nth lst 0) res Board.Empty)
   | Piece p ->
       let nbrd =
-        Board.set_square (List.nth lst 1) (List.nth lst 0) board Board.Empty
+        Board.set_square (List.nth lst 1) (List.nth lst 0) res Board.Empty
       in
       Captured (nbrd, p)
 
-(** Validates the move of a piece using a given validator. Returns the result of
-    moving piece*)
+(** Validates the move of a piece using a given . Returns the result of moving
+    piece*)
 let validate (brd : Board.board) (ply : Player.player) (lst : int list)
     validator =
-  if validator brd ply lst then move_piece brd lst else raise Invalid_move
+  if validator brd ply lst then move_piece brd lst ply else raise Invalid_move
 
 (** Move validator for Queen. Depends on validators of both Bishop and Rook*)
 let validate_queen_move (brd : Board.board) (ply : Player.player)
