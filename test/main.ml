@@ -1,3 +1,15 @@
+(* testing plan *)
+(* - Automatically tested: the system will automatically check whether the
+   pieces are movin in its valid move and if it's able to capture any piece
+   through the move. It will also ensure the board is initialized correctly and
+   if each piece is in the right position using black-box testing to test the
+   output. Lastly, it will check if the game is started and ended in a correct
+   way and if turn-taking is happening correctly using black-box testing. *)
+(*- Manually tested: the terminal interface is manually tested to make sure that
+  the game is easy to play with while engaging for players in terminal. We also
+  made sure that the messages printed out from different entry inputs are
+  understandable and engaging for players. *)
+
 open OUnit2
 open Game
 
