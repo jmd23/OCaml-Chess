@@ -27,9 +27,15 @@ let validate_owner_test (name : string) (plr : Player.player) (p : Board.piece)
   name >:: fun _ -> assert_equal expected_output (Board.validate_owner plr p)
 
 (* -------------------Movement Tests---------------------- *)
+let get_move move =
+  match move with
+  | Movement.Normal brd -> brd
+  | Captured brd_pair -> fst brd_pair
+
 let move_test (name : string) (board : Board.board) (plr : Player.player)
-    (lst : int list) (expected_output : Movement.result) : test =
-  name >:: fun _ -> assert_equal expected_output (Movement.move board plr lst)
+    (lst : int list) (expected_output : Board.board) : test =
+  name >:: fun _ ->
+  assert_equal expected_output (get_move (Movement.move board plr lst))
 
 (* -------------------Player Tests---------------------- *)
 let switch_player_test (name : string) (player : Player.player)
@@ -87,20 +93,20 @@ let move_two_legal_compare (name : string) (lst1 : int list) (lst2 : int list)
        (List.nth lst2 3) (List.nth lst2 2))
 
 (* test capture *)
-let white_capture_test (name : string) st (st : State.state)
+let white_capture_test (name : string) (st : State.state)
     (expected_output : Board.piece list) : test =
   name >:: fun _ -> assert_equal expected_output (State.get_white_captured st)
 
-let black_capture_test (name : string) st (st : State.state)
+let black_capture_test (name : string) (st : State.state)
     (expected_output : Board.piece list) : test =
   name >:: fun _ -> assert_equal expected_output (State.get_black_captured st)
 
 (* undo/redo *)
-let undo_test (name : string) st (st : State.state)
+let undo_test (name : string) (st : State.state)
     (expected_output : State.undo_result) : test =
   name >:: fun _ -> assert_equal expected_output (State.undo st)
 
-let redo_test (name : string) st (st : State.state)
+let redo_test (name : string) (st : State.state)
     (expected_output : State.redo_result) : test =
   name >:: fun _ -> assert_equal expected_output (State.redo st)
 
@@ -153,7 +159,7 @@ let parse_test (name : string) (s : string) (expected_output : string) : test =
 let start_board = Board.starting_board
 
 (* new board legal move 1 *)
-let rank_1 =
+let rank_1_1 =
   [
     Board.Piece (Rook White);
     Piece (Knight White);
@@ -165,7 +171,7 @@ let rank_1 =
     Piece (Rook White);
   ]
 
-let rank_2 =
+let rank_2_1 =
   [
     Board.Piece (Pawn White);
     Piece (Pawn White);
@@ -177,7 +183,7 @@ let rank_2 =
     Piece (Pawn White);
   ]
 
-let rank_4 =
+let rank_4_1 =
   [
     Board.Empty;
     Board.Empty;
@@ -189,7 +195,7 @@ let rank_4 =
     Board.Empty;
   ]
 
-let rank_7 =
+let rank_7_1 =
   [
     Board.Piece (Pawn Black);
     Piece (Pawn Black);
@@ -201,7 +207,7 @@ let rank_7 =
     Piece (Pawn Black);
   ]
 
-let rank_8 =
+let rank_8_1 =
   [
     Board.Piece (Rook Black);
     Piece (Knight Black);
@@ -218,20 +224,24 @@ let empty_ranks =
 
 let legal_board_1 =
   [
-    rank_8;
-    rank_7;
+    rank_8_1;
+    rank_7_1;
     empty_ranks;
     empty_ranks;
-    rank_4;
+    rank_4_1;
     empty_ranks;
-    rank_2;
-    rank_1;
+    rank_2_1;
+    rank_1_1;
   ]
 
 (* states *)
 let start_state = State.init_state ()
 let state_1 = get_state (State.make_move start_state [ 4; 6; 4; 5 ])
-(* [ 6; 4; 5; 4 ] *)
+
+let get_undone un =
+  match un with
+  | State.Undo_Fail -> failwith "can't undo"
+  | Undone st -> st
 
 let state_tests =
   [
@@ -247,6 +257,10 @@ let state_tests =
       [ 4; 1; 4; 3 ] state_1;
     move_two_legal_compare "make two legal moves: e2->e4 then e7->e5"
       [ 4; 6; 4; 4 ] [ 4; 1; 4; 3 ] start_state;
+    white_capture_test "white capture none" start_state [];
+    black_capture_test "black capture none" start_state [];
+    undo_test "undo start board" start_state Undo_Fail;
+    redo_test "redo start board" start_state Redo_Fail;
   ]
 
 let parse_tests =
@@ -257,7 +271,130 @@ let parse_tests =
     parse_test "test quit" "quit" "quit";
   ]
 
+let rank_7_2 =
+  [
+    Board.Empty;
+    Piece (Pawn Black);
+    Piece (Pawn Black);
+    Piece (Pawn Black);
+    Piece (Pawn Black);
+    Piece (Pawn Black);
+    Piece (Pawn Black);
+    Piece (Pawn Black);
+  ]
+
+let rank_6_2 =
+  [
+    Board.Piece (Pawn Black);
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+  ]
+
+let rank_3_2 =
+  [
+    Board.Piece (Pawn White);
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+  ]
+
+let rank_2_2 =
+  [
+    Board.Empty;
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
+  ]
+
+let legal_board_2 =
+  [
+    rank_8_1;
+    rank_7_2;
+    rank_6_2;
+    empty_ranks;
+    empty_ranks;
+    rank_3_2;
+    rank_2_2;
+    rank_1_1;
+  ]
+
+let legal_board_3 =
+  [
+    rank_8_1;
+    rank_7_2;
+    rank_6_2;
+    empty_ranks;
+    rank_4_1;
+    empty_ranks;
+    rank_2_1;
+    rank_1_1;
+  ]
+
+let board_tests = []
+
+let movement_tests =
+  [
+    move_test "move e2 to e4" start_board Player.White [ 4; 6; 4; 4 ]
+      legal_board_1;
+    move_test "move a7 to a6" legal_board_1 Player.Black [ 0; 1; 0; 2 ]
+      legal_board_3;
+  ]
+
+let player_tests =
+  [
+    switch_player_test "after white should be black" Player.White Player.Black;
+    switch_player_test "after black should be white" Player.Black Player.White;
+    string_of_player_test "test white" Player.White "White";
+    string_of_player_test "test black" Player.Black "Black";
+  ]
+
+let piece_tests =
+  [
+    knight_valid_test "move white knight from b1 to c3" start_board Player.White
+      [ 1; 7; 2; 5 ] true;
+    knight_valid_test "invalid knight move" start_board Player.White
+      [ 1; 7; 4; 4 ] false;
+    pawn_valid_test "move pawn from h2 to h3" start_board Player.White
+      [ 5; 6; 5; 5 ] true;
+    pawn_valid_test "invalid pawn move" start_board Player.White [ 5; 6; 5; 3 ]
+      false;
+    rook_valid_test "move rook from a1 to a2" legal_board_2 Player.White
+      [ 0; 7; 0; 6 ] true;
+    rook_valid_test "invalid rook move" start_board Player.White [ 0; 7; 0; 5 ]
+      false;
+    bishop_valid_test "move bishop from f1 to d3" legal_board_3 Player.White
+      [ 5; 7; 3; 5 ] true;
+    bishop_valid_test "invalid bishop move" start_board Player.White
+      [ 5; 7; 0; 5 ] false;
+    king_valid_test "move king from e1 to e2" legal_board_3 Player.White
+      [ 4; 7; 4; 6 ] true;
+    king_valid_test "invalid king move" start_board Player.White [ 4; 7; 0; 5 ]
+      false;
+  ]
+
 let suite =
-  "test suite for project" >::: List.flatten [ state_tests; parse_tests ]
+  "test suite for project"
+  >::: List.flatten
+         [
+           state_tests;
+           parse_tests;
+           board_tests;
+           piece_tests;
+           movement_tests;
+           player_tests;
+         ]
 
 let _ = run_test_tt_main suite
