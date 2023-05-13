@@ -106,13 +106,16 @@ let black_capture_test (name : string) (st : State.state)
   name >:: fun _ -> assert_equal expected_output (State.get_black_captured st)
 
 (* undo/redo *)
-let undo_test (name : string) (st : State.state)
-    (expected_output : State.undo_result) : test =
+let undo_test (name : string) (st : State.state) expected_output : test =
   name >:: fun _ -> assert_equal expected_output (State.undo st)
 
 let redo_test (name : string) (st : State.state)
     (expected_output : State.redo_result) : test =
   name >:: fun _ -> assert_equal expected_output (State.redo st)
+
+let has_legal_moves_test (name : string) (st : State.state)
+    (expected_output : bool) : test =
+  name >:: fun _ -> assert_equal expected_output (State.has_legal_moves st)
 
 (* -------------------Pieces Tests---------------------- *)
 
@@ -226,6 +229,7 @@ let rank_8_1 =
 let empty_ranks =
   [ Board.Empty; Empty; Empty; Empty; Empty; Empty; Empty; Empty ]
 
+(* e2 to e4 *)
 let legal_board_1 =
   [
     rank_8_1;
@@ -242,10 +246,43 @@ let legal_board_1 =
 let start_state = State.init_state ()
 let state_1 = get_state (State.make_move start_state [ 4; 6; 4; 5 ])
 
+let state_black_capture : State.state =
+  get_state
+    (State.make_move
+       (get_state
+          (State.make_move
+             (get_state
+                (State.make_move
+                   (get_state (State.make_move start_state [ 4; 6; 4; 4 ]))
+                   [ 4; 1; 4; 3 ]))
+             [ 5; 6; 5; 4 ]))
+       [ 4; 3; 5; 4 ])
+
+let state_white_capture : State.state =
+  get_state
+    (State.make_move
+       (get_state
+          (State.make_move
+             (get_state
+                (State.make_move
+                   (get_state
+                      (State.make_move
+                         (get_state
+                            (State.make_move state_black_capture [ 5; 7; 2; 4 ]))
+                         [ 3; 0; 7; 4 ]))
+                   [ 4; 7; 5; 7 ]))
+             [ 1; 1; 1; 3 ]))
+       [ 2; 4; 1; 3 ])
+
 let get_undone un =
   match un with
   | State.Undo_Fail -> failwith "can't undo"
   | Undone st -> st
+
+let get_redone re =
+  match re with
+  | State.Redo_Fail -> failwith "can't redo"
+  | Redone st -> st
 
 let state_tests =
   [
@@ -263,8 +300,15 @@ let state_tests =
       [ 4; 6; 4; 4 ] [ 4; 1; 4; 3 ] start_state;
     white_capture_test "white capture none" start_state [];
     black_capture_test "black capture none" start_state [];
+    black_capture_test "black captured one" state_black_capture [ Pawn White ];
+    white_capture_test "white captured one" state_white_capture [ Pawn Black ];
     undo_test "undo start board" start_state Undo_Fail;
+    (* undo_test "undo one move (only took one move)" state_1 (Undone
+       start_state); *)
     redo_test "redo start board" start_state Redo_Fail;
+    has_legal_moves_test "start game has legal moves " start_state true;
+    has_legal_moves_test "after one move the game still has legal moves "
+      state_1 true;
   ]
 
 let parse_tests =
@@ -323,6 +367,7 @@ let rank_2_2 =
     Board.Piece (Pawn White);
   ]
 
+(* 上下的左边 *)
 let legal_board_2 =
   [
     rank_8_1;
@@ -335,6 +380,7 @@ let legal_board_2 =
     rank_1_1;
   ]
 
+(* 上面的左边 e2 to e4*)
 let legal_board_3 =
   [
     rank_8_1;
@@ -347,6 +393,7 @@ let legal_board_3 =
     rank_1_1;
   ]
 
+(* 下面的左边 *)
 let legal_board_4 =
   [
     rank_8_1;
@@ -383,18 +430,20 @@ let rank_1_no_knight =
     Piece (Rook White);
   ]
 
+(* 上面的左边 e2e4 knight *)
 let legal_board_knight =
   [
     rank_8_1;
     rank_7_2;
     rank_6_2;
     empty_ranks;
-    empty_ranks;
+    rank_4_1;
     rank_3_knight;
     rank_2_1;
     rank_1_no_knight;
   ]
 
+(* 上下的左边 无rook *)
 let legal_board_rook =
   [
     rank_8_1;
@@ -448,6 +497,8 @@ let movement_tests =
       legal_board_3;
     move_test "move a7 to a6" legal_board_4 Player.Black [ 0; 1; 0; 2 ]
       legal_board_2;
+    move_test "move rook " legal_board_3 Player.White [ 1; 7; 2; 5 ]
+      legal_board_knight;
   ]
 
 let player_tests =
