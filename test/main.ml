@@ -343,6 +343,66 @@ let legal_board_3 =
     rank_1_1;
   ]
 
+let legal_board_4 =
+  [
+    rank_8_1;
+    rank_7_1;
+    empty_ranks;
+    empty_ranks;
+    empty_ranks;
+    rank_3_2;
+    rank_2_2;
+    rank_1_1;
+  ]
+
+let rank_3_knight =
+  [
+    Board.Empty;
+    Board.Empty;
+    Piece (Knight White);
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+  ]
+
+let rank_1_no_knight =
+  [
+    Board.Piece (Rook White);
+    Empty;
+    Piece (Bishop White);
+    Piece (Queen White);
+    Piece (King White);
+    Piece (Bishop White);
+    Piece (Knight White);
+    Piece (Rook White);
+  ]
+
+let legal_board_knight =
+  [
+    rank_8_1;
+    rank_7_2;
+    rank_6_2;
+    empty_ranks;
+    empty_ranks;
+    rank_3_knight;
+    rank_2_1;
+    rank_1_no_knight;
+  ]
+
+let legal_board_rook =
+  [
+    rank_8_1;
+    rank_7_2;
+    rank_6_2;
+    empty_ranks;
+    rank_3_2;
+    empty_ranks;
+    rank_2_2;
+    rank_1_1;
+  ]
+
 let board_tests = []
 
 let movement_tests =
@@ -351,6 +411,8 @@ let movement_tests =
       legal_board_1;
     move_test "move a7 to a6" legal_board_1 Player.Black [ 0; 1; 0; 2 ]
       legal_board_3;
+    move_test "move a7 to a6" legal_board_4 Player.Black [ 0; 1; 0; 2 ]
+      legal_board_2;
   ]
 
 let player_tests =
@@ -365,23 +427,61 @@ let piece_tests =
   [
     knight_valid_test "move white knight from b1 to c3" start_board Player.White
       [ 1; 7; 2; 5 ] true;
+    knight_valid_test "move white knight from b1 to a3" start_board Player.White
+      [ 1; 7; 0; 5 ] true;
+    knight_valid_test "move white knight from c3 to b1" legal_board_knight
+      Player.White [ 2; 5; 1; 7 ] true;
+    knight_valid_test "move white knight from c3 to a4" legal_board_knight
+      Player.White [ 2; 5; 0; 4 ] true;
+    knight_valid_test "move white knight from c3 to b5" legal_board_knight
+      Player.White [ 2; 5; 1; 3 ] true;
+    knight_valid_test "move white knight from c3 to d5" legal_board_knight
+      Player.White [ 2; 5; 3; 3 ] true;
+    knight_valid_test "move white knight from c3 to e4" legal_board_knight
+      Player.White [ 2; 5; 4; 4 ] true;
     knight_valid_test "invalid knight move" start_board Player.White
       [ 1; 7; 4; 4 ] false;
+    knight_valid_test "invalid knight move" start_board Player.White
+      [ 1; 7; 5; 5 ] false;
     pawn_valid_test "move pawn from h2 to h3" start_board Player.White
       [ 5; 6; 5; 5 ] true;
+    pawn_valid_test "move pawn from h2 to h3" start_board Player.White
+      [ 5; 6; 5; 4 ] true;
+    pawn_valid_test "move pawn from h2 to h3" start_board Player.White
+      [ 4; 6; 4; 5 ] true;
+    pawn_valid_test "move pawn from h2 to h3" start_board Player.White
+      [ 0; 6; 0; 5 ] true;
+    pawn_valid_test "move pawn from a4 to a5" legal_board_rook Player.White
+      [ 0; 4; 0; 3 ] true;
     pawn_valid_test "invalid pawn move" start_board Player.White [ 5; 6; 5; 3 ]
+      false;
+    pawn_valid_test "invalid pawn move" legal_board_1 Player.Black
+      [ 5; 0; 5; 3 ] false;
+    pawn_valid_test "invalid pawn move" start_board Player.White [ 5; 6; 5; 2 ]
+      false;
+    pawn_valid_test "invalid pawn move" start_board Player.White [ 5; 6; 4; 5 ]
       false;
     rook_valid_test "move rook from a1 to a2" legal_board_2 Player.White
       [ 0; 7; 0; 6 ] true;
+    rook_valid_test "move rook from a1 to a3" legal_board_rook Player.White
+      [ 0; 7; 0; 5 ] true;
     rook_valid_test "invalid rook move" start_board Player.White [ 0; 7; 0; 5 ]
       false;
     bishop_valid_test "move bishop from f1 to d3" legal_board_3 Player.White
       [ 5; 7; 3; 5 ] true;
+    bishop_valid_test "move bishop from f1 to a6" legal_board_3 Player.White
+      [ 5; 7; 0; 2 ] true;
+    bishop_valid_test "move bishop from f1 to a6" legal_board_3 Player.White
+      [ 5; 7; 1; 3 ] true;
+    bishop_valid_test "move bishop from f1 to a6" legal_board_3 Player.White
+      [ 5; 7; 2; 4 ] true;
     bishop_valid_test "invalid bishop move" start_board Player.White
       [ 5; 7; 0; 5 ] false;
     king_valid_test "move king from e1 to e2" legal_board_3 Player.White
       [ 4; 7; 4; 6 ] true;
     king_valid_test "invalid king move" start_board Player.White [ 4; 7; 0; 5 ]
+      false;
+    king_valid_test "invalid king move" start_board Player.White [ 4; 7; 3; 5 ]
       false;
   ]
 
