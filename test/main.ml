@@ -18,13 +18,17 @@ let set_row_test (name : string) j row value (expected_output : 'a list) : test
     =
   name >:: fun _ -> assert_equal expected_output (Board.set_row j row value)
 
-let set_square_test (name : string) i j (board : Board.board) (p : Board.square)
-    (expected_output : Board.square list list) : test =
-  name >:: fun _ -> assert_equal expected_output (Board.set_square i j board p)
+let get_square_test (name : string) i j (board : Board.board) expected_output :
+    test =
+  name >:: fun _ -> assert_equal expected_output (Board.get_square board i j)
 
 let validate_owner_test (name : string) (plr : Player.player) (p : Board.piece)
     (expected_output : bool) : test =
   name >:: fun _ -> assert_equal expected_output (Board.validate_owner plr p)
+
+let board_equal_test (name : string) (brd1 : Board.board) (brd2 : Board.board)
+    (expected_output : bool) : test =
+  name >:: fun _ -> assert_equal expected_output (Board.board_equal brd1 brd2)
 
 (* -------------------Movement Tests---------------------- *)
 let get_move move =
@@ -403,7 +407,38 @@ let legal_board_rook =
     rank_1_1;
   ]
 
-let board_tests = []
+let board_tests =
+  [
+    piece_to_string_test "test white pawn" (Pawn White) "♙";
+    piece_to_string_test "test black pawn" (Pawn Black) "♙";
+    piece_to_string_test "test white bishop" (Bishop White) "♗";
+    piece_to_string_test "test black bishop" (Bishop Black) "♗";
+    piece_to_string_test "test white knight" (Knight White) "♘";
+    piece_to_string_test "test black knight" (Knight Black) "♘";
+    piece_to_string_test "test white Rook" (Rook White) "♖";
+    piece_to_string_test "test black Rook" (Rook Black) "♖";
+    piece_to_string_test "test white Queen" (Queen White) "♕";
+    piece_to_string_test "test black Queen" (Queen Black) "♕";
+    piece_to_string_test "test white King" (King White) "♔";
+    piece_to_string_test "test black King" (King Black) "♔";
+    get_square_test "get a1" 7 0 start_board (Piece (Rook White));
+    get_square_test "get b1" 7 1 start_board (Piece (Knight White));
+    get_square_test "get c1" 7 2 start_board (Piece (Bishop White));
+    get_square_test "get d1" 7 3 start_board (Piece (Queen White));
+    get_square_test "get e1" 7 4 start_board (Piece (King White));
+    get_square_test "get h8" 0 7 start_board (Piece (Rook Black));
+    get_square_test "get g8" 0 6 start_board (Piece (Knight Black));
+    get_square_test "get f8" 0 5 start_board (Piece (Bishop Black));
+    get_square_test "get e8" 0 4 start_board (Piece (King Black));
+    get_square_test "get d8" 0 3 start_board (Piece (Queen Black));
+    validate_owner_test "owner should be white" Player.White (Rook White) true;
+    validate_owner_test "owner should be white" Player.White (Pawn White) true;
+    validate_owner_test "owner should be black" Player.Black (Pawn Black) true;
+    validate_owner_test "owner should be black" Player.Black (Queen Black) true;
+    board_equal_test "two boards are not equal" legal_board_1 start_board false;
+    board_equal_test "compare the same board" legal_board_knight
+      legal_board_knight true;
+  ]
 
 let movement_tests =
   [
@@ -445,11 +480,11 @@ let piece_tests =
       [ 1; 7; 5; 5 ] false;
     pawn_valid_test "move pawn from h2 to h3" start_board Player.White
       [ 5; 6; 5; 5 ] true;
-    pawn_valid_test "move pawn from h2 to h3" start_board Player.White
+    pawn_valid_test "move pawn from h2 to h4" start_board Player.White
       [ 5; 6; 5; 4 ] true;
-    pawn_valid_test "move pawn from h2 to h3" start_board Player.White
+    pawn_valid_test "move pawn from e2 to e3" start_board Player.White
       [ 4; 6; 4; 5 ] true;
-    pawn_valid_test "move pawn from h2 to h3" start_board Player.White
+    pawn_valid_test "move pawn from a2 to a3" start_board Player.White
       [ 0; 6; 0; 5 ] true;
     pawn_valid_test "move pawn from a4 to a5" legal_board_rook Player.White
       [ 0; 4; 0; 3 ] true;
