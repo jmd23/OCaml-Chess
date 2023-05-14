@@ -55,4 +55,9 @@ val print_board : board -> unit
     colors for each player's pieces*)
 
 val validate_owner : Player.player -> piece -> bool
+(** [validate_owner plr p] returns a boolean, for whether the piece object p
+    belongs to the player plr *)
+
 val board_equal : board -> board -> bool
+(** [board_equal b1 b2] returns a boolean as to whether two boards are equal.
+    Two boards are equal if they have the same piece in every square. *)

@@ -41,6 +41,8 @@ val get_black_captured : state -> Board.piece list
     far in the order in which they were captured.*)
 
 val in_check : state -> Player.player -> Board.board -> bool
+(** [in_check st plr brd] returns whether the player plr is currently "in
+    check", in the state st on the board b.*)
 
 val make_move : state -> int list -> move_result
 (** [make_move st lst] is the result of attempting to move a piece on the sqaure
@@ -56,7 +58,15 @@ val make_move : state -> int list -> move_result
     [Illegal_Piece] is returned. *)
 
 val has_legal_moves : state -> bool
+
+(** [has_legal_moves st] returns whether there are any legal moves for the
+    current player in the state st. Uses mutability. Useful for determining
+    checkmates and stalemates*)
+
 val threefold_rep : state -> bool
+
+(** [threefold_rep st] returns whether the current board has been repeated three
+    times. If so, the game will end.*)
 
 val undo : state -> undo_result
 (** [undo state] is the result of attempting to undo a previous move.
