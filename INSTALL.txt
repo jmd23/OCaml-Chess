@@ -1,4 +1,4 @@
-Our project so far does not use any external libraries or packages. Simply 
+Our project does not use any external libraries or packages. Simply 
 follow the directions in the textbook to install OPAM and create a switch, with
 the OCaml compiler. (Textbook Link: https://cs3110.github.io/textbook/cover.html)
 
