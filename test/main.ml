@@ -212,25 +212,25 @@ let start_board = Board.starting_board
 let rank_1_1 =
   [
     Board.Piece (Rook White);
-    Piece (Knight White);
-    Piece (Bishop White);
-    Piece (Queen White);
-    Piece (King White);
-    Piece (Bishop White);
-    Piece (Knight White);
-    Piece (Rook White);
+    Board.Piece (Knight White);
+    Board.Piece (Bishop White);
+    Board.Piece (Queen White);
+    Board.Piece (King White);
+    Board.Piece (Bishop White);
+    Board.Piece (Knight White);
+    Board.Piece (Rook White);
   ]
 
 let rank_2_1 =
   [
     Board.Piece (Pawn White);
-    Piece (Pawn White);
-    Piece (Pawn White);
-    Piece (Pawn White);
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
     Board.Empty;
-    Piece (Pawn White);
-    Piece (Pawn White);
-    Piece (Pawn White);
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
   ]
 
 let rank_4_1 =
@@ -239,7 +239,7 @@ let rank_4_1 =
     Board.Empty;
     Board.Empty;
     Board.Empty;
-    Piece (Pawn White);
+    Board.Piece (Pawn White);
     Board.Empty;
     Board.Empty;
     Board.Empty;
@@ -248,53 +248,62 @@ let rank_4_1 =
 let rank_7_1 =
   [
     Board.Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
   ]
 
 let rank_8_1 =
   [
     Board.Piece (Rook Black);
-    Piece (Knight Black);
-    Piece (Bishop Black);
-    Piece (Queen Black);
-    Piece (King Black);
-    Piece (Bishop Black);
-    Piece (Knight Black);
-    Piece (Rook Black);
+    Board.Piece (Knight Black);
+    Board.Piece (Bishop Black);
+    Board.Piece (Queen Black);
+    Board.Piece (King Black);
+    Board.Piece (Bishop Black);
+    Board.Piece (Knight Black);
+    Board.Piece (Rook Black);
   ]
 
 let rank_8_king =
   [
     Board.Empty;
-    Empty;
-    Empty;
-    Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
     Board.Piece (King Black);
-    Empty;
-    Empty;
-    Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
   ]
 
 let rank_6_all =
   [
     Board.Empty;
-    Empty;
-    Empty;
+    Board.Empty;
+    Board.Empty;
     Board.Piece (Queen White);
-    Piece (King White);
-    Piece (Rook White);
-    Empty;
-    Empty;
+    Board.Piece (King White);
+    Board.Piece (Rook White);
+    Board.Empty;
+    Board.Empty;
   ]
 
 let empty_ranks =
-  [ Board.Empty; Empty; Empty; Empty; Empty; Empty; Empty; Empty ]
+  [
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+  ]
 
 (* e2 to e4 *)
 let legal_board_1 =
@@ -482,13 +491,13 @@ let parse_tests =
 let rank_7_2 =
   [
     Board.Empty;
-    Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
   ]
 
 let rank_6_2 =
@@ -567,7 +576,7 @@ let rank_3_knight =
   [
     Board.Empty;
     Board.Empty;
-    Piece (Knight White);
+    Board.Piece (Knight White);
     Board.Empty;
     Board.Empty;
     Board.Empty;
@@ -578,13 +587,13 @@ let rank_3_knight =
 let rank_1_no_knight =
   [
     Board.Piece (Rook White);
-    Empty;
-    Piece (Bishop White);
-    Piece (Queen White);
-    Piece (King White);
-    Piece (Bishop White);
-    Piece (Knight White);
-    Piece (Rook White);
+    Board.Empty;
+    Board.Piece (Bishop White);
+    Board.Piece (Queen White);
+    Board.Piece (King White);
+    Board.Piece (Bishop White);
+    Board.Piece (Knight White);
+    Board.Piece (Rook White);
   ]
 
 let legal_board_knight =
@@ -614,49 +623,49 @@ let legal_board_rook =
 let rank_1_castling =
   [
     Board.Piece (Rook White);
-    Empty;
-    Empty;
-    Empty;
-    Piece (King White);
-    Empty;
-    Empty;
-    Piece (Rook White);
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Piece (King White);
+    Board.Empty;
+    Board.Empty;
+    Board.Piece (Rook White);
   ]
 
 let rank_2_castling =
   [
     Board.Piece (Pawn White);
-    Piece (Pawn White);
-    Piece (Pawn White);
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
     Board.Empty;
     Board.Empty;
-    Piece (Pawn White);
-    Piece (Pawn White);
-    Piece (Pawn White);
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
+    Board.Piece (Pawn White);
   ]
 
 let rank_7_castling =
   [
     Board.Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
-    Empty;
-    Empty;
-    Piece (Pawn Black);
-    Piece (Pawn Black);
-    Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Empty;
+    Board.Empty;
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
+    Board.Piece (Pawn Black);
   ]
 
 let rank_8_castling =
   [
     Board.Piece (Rook Black);
-    Empty;
-    Empty;
-    Empty;
-    Piece (King Black);
-    Empty;
-    Empty;
-    Piece (Rook Black);
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Piece (King Black);
+    Board.Empty;
+    Board.Empty;
+    Board.Piece (Rook Black);
   ]
 
 let board_castling =
@@ -674,13 +683,13 @@ let board_castling =
 let rank_1_castled =
   [
     Board.Piece (Rook White);
-    Empty;
-    Empty;
-    Empty;
-    Empty;
-    Piece (Rook White);
-    Piece (King White);
-    Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Empty;
+    Board.Piece (Rook White);
+    Board.Piece (King White);
+    Board.Empty;
   ]
 
 let board_castled =
