@@ -1,14 +1,37 @@
 (* testing plan *)
-(* - Automatically tested: the system will automatically check whether the
-   pieces are movin in its valid move and if it's able to capture any piece
-   through the move. It will also ensure the board is initialized correctly and
-   if each piece is in the right position using black-box testing to test the
-   output. Lastly, it will check if the game is started and ended in a correct
-   way and if turn-taking is happening correctly using black-box testing. *)
+(* - Automatically tested: we will automatically test (through OUnit) whether
+   pieces only move in valid ways, and if they are able to capture any piece as
+   a result of the move. This is primarily done through black-box testing:
+   examing the specified movements of each piece, setting up boards, and entring
+   in both squares that align and do not align with these movements. We also
+   compare the board before and after the move to ensure any captures occur
+   correctly. We will also test to ensure the board is initialized correctly and
+   if each piece is in the right position, again using black-box testing. This
+   is part of the tests we craft to the state module. In addition, we write
+   OUnit tests for the other major functions in that module, including
+   [has_legal_moves], and [in_check]. We also add tests for parsing the inputs
+   (the commands module), ensuring that move commands, quit, undo/redo, etc...
+   are being interpreted correctly. We have some tests for the board and player
+   modules, ensuring that our basic functionality (storing the board, switching
+   the player, etc...) is met. Lastly, the test suite will check if the game is
+   started and ended in a correct way and if turn-taking is happening. In
+   summary, we use automatic testing for the basic functionality of the system
+   and simple move sequences, as these can be encoded relatively quickly and
+   give us some assurance of correctness. *)
 (*- Manually tested: the terminal interface is manually tested to make sure that
   the game is easy to play with while engaging for players in terminal. We also
   made sure that the messages printed out from different entry inputs are
-  understandable and engaging for players. *)
+  understandable and engaging for players. In this manually testing, we test out
+  longer move sequences (castling, sequences of captures, etc...) to determine
+  if all the rules of the game are adhered to and that the behavior of the
+  system is as expected. We aksi enter bad inputs into the game, to make sure
+  the system does not crash. *)
+(*- Taken together, we use these to establish the correctness of our system. If
+  the basic piece functionality, and simplie move sequences work (automatic
+  testing), and longer games and move sequences also work (manual testing), we
+  can be fairly confident our chess system is robust and will behaive as
+  expected, no matter the input. There may still be bugs, but these do not
+  strongly affect gameplay. *)
 
 open OUnit2
 open Game
@@ -129,6 +152,14 @@ let has_legal_moves_test (name : string) (st : State.state)
     (expected_output : bool) : test =
   name >:: fun _ -> assert_equal expected_output (State.has_legal_moves st)
 
+let is_in_check_test (name : string) (st : State.state) (expected_output : bool)
+    : test =
+  name >:: fun _ ->
+  assert_equal expected_output
+    (State.in_check st
+       (State.get_current_player st)
+       (State.get_current_board st))
+
 (* -------------------Pieces Tests---------------------- *)
 
 (* Knight *)
@@ -238,6 +269,30 @@ let rank_8_1 =
     Piece (Rook Black);
   ]
 
+let rank_8_king =
+  [
+    Board.Empty;
+    Empty;
+    Empty;
+    Empty;
+    Board.Piece (King Black);
+    Empty;
+    Empty;
+    Empty;
+  ]
+
+let rank_6_all =
+  [
+    Board.Empty;
+    Empty;
+    Empty;
+    Board.Piece (Queen White);
+    Piece (King White);
+    Piece (Rook White);
+    Empty;
+    Empty;
+  ]
+
 let empty_ranks =
   [ Board.Empty; Empty; Empty; Empty; Empty; Empty; Empty; Empty ]
 
@@ -252,6 +307,18 @@ let legal_board_1 =
     empty_ranks;
     rank_2_1;
     rank_1_1;
+  ]
+
+let stalemate_board =
+  [
+    rank_8_king;
+    empty_ranks;
+    rank_6_all;
+    empty_ranks;
+    empty_ranks;
+    empty_ranks;
+    empty_ranks;
+    empty_ranks;
   ]
 
 (* states *)
@@ -296,12 +363,35 @@ let get_redone re =
   | State.Redo_Fail -> failwith "can't redo"
   | Redone st -> st
 
+let state_no_legals =
+  get_state
+    (State.make_move
+       (get_state
+          (State.make_move
+             (get_state
+                (State.make_move
+                   (get_state (State.make_move start_state [ 5; 6; 5; 5 ]))
+                   [ 4; 1; 4; 3 ]))
+             [ 6; 6; 6; 4 ]))
+       [ 3; 0; 7; 4 ])
+
+let state_black_in_check =
+  get_state
+    (State.make_move
+       (get_state
+          (State.make_move
+             (get_state (State.make_move start_state [ 4; 6; 4; 4 ]))
+             [ 3; 1; 3; 3 ]))
+       [ 5; 7; 1; 3 ])
+
 let state_tests =
   [
     compare_board "compare board e2->e4" [ 4; 6; 4; 4 ] start_state
       legal_board_1;
     make_move_illegalmove_test "illegal move from e1 to h6" [ 4; 7; 5; 2 ]
       start_state;
+    make_move_illegalmove_test "black is in check, must move out of it"
+      [ 0; 1; 0; 2 ] state_black_in_check;
     make_move_illegalpiece_test "illegal piece from e8 to e3" [ 4; 0; 4; 5 ]
       start_state;
     move_one_legal_compare "make one legal move: e2 to e4" [ 4; 6; 4; 4 ]
@@ -321,6 +411,11 @@ let state_tests =
     has_legal_moves_test "start game has legal moves " start_state true;
     has_legal_moves_test "after one move the game still has legal moves "
       state_1 true;
+    has_legal_moves_test "white is in checkmate, has no legal moves "
+      state_no_legals false;
+    is_in_check_test "white is in check" state_no_legals true;
+    is_in_check_test "black is in check" state_black_in_check true;
+    is_in_check_test "after one move, neither player is in check" state_1 false;
   ]
 
 let parse_tests =
@@ -581,6 +676,10 @@ let piece_tests =
       false;
     king_valid_test "invalid king move" start_board Player.White [ 4; 7; 3; 5 ]
       false;
+    king_valid_test
+      "should not be a valid move in state (result in a check), but should\n\
+      \    pass the king movement check" stalemate_board Player.Black
+      [ 4; 0; 4; 1 ] true;
   ]
 
 let suite =
