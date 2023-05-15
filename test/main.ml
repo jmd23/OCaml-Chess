@@ -389,25 +389,24 @@ let get_redone re =
   | Redone st -> st
 
 let state_no_legals =
-  get_state
-    (State.make_move
-       (get_state
-          (State.make_move
-             (get_state
-                (State.make_move
-                   (get_state (State.make_move start_state [ 5; 6; 5; 5 ]))
-                   [ 4; 1; 4; 3 ]))
-             [ 6; 6; 6; 4 ]))
-       [ 3; 0; 7; 4 ])
+  start_state
+  |> (fun state -> State.make_move state [ 5; 6; 5; 5 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 4; 1; 4; 3 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 6; 6; 6; 4 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 3; 0; 7; 4 ])
+  |> get_state
 
 let state_black_in_check =
-  get_state
-    (State.make_move
-       (get_state
-          (State.make_move
-             (get_state (State.make_move start_state [ 4; 6; 4; 4 ]))
-             [ 3; 1; 3; 3 ]))
-       [ 5; 7; 1; 3 ])
+  start_state
+  |> (fun state -> State.make_move state [ 4; 6; 4; 4 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 3; 1; 3; 3 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 5; 7; 1; 3 ])
+  |> get_state
 
 let state_tests =
   [
@@ -428,9 +427,15 @@ let state_tests =
     white_capture_test "white capture none" start_state [];
     black_capture_test "black capture none" start_state [];
     black_capture_test "black captured one" state_black_capture [ Pawn White ];
+    white_capture_test "black captured one white did not capture"
+      state_black_capture [];
+    black_capture_test "black captured one even state changed"
+      state_white_capture [ Pawn White ];
     white_capture_test "white captured one" state_white_capture [ Pawn Black ];
     black_capture_test "black capture two pawns" state_black_capture_2
       [ Pawn White; Bishop White ];
+    white_capture_test "white still just cpatured one" state_black_capture_2
+      [ Pawn Black ];
     undo_test "undo start board" start_state Undo_Fail;
     redo_test "redo start board" start_state Redo_Fail;
     has_legal_moves_test "start game has legal moves " start_state true;
@@ -499,7 +504,6 @@ let rank_2_2 =
     Board.Piece (Pawn White);
   ]
 
-(* 上下的左边 *)
 let legal_board_2 =
   [
     rank_8_1;
@@ -512,7 +516,6 @@ let legal_board_2 =
     rank_1_1;
   ]
 
-(* 上面的左边 e2 to e4*)
 let legal_board_3 =
   [
     rank_8_1;
@@ -525,7 +528,6 @@ let legal_board_3 =
     rank_1_1;
   ]
 
-(* 下面的左边 *)
 let legal_board_4 =
   [
     rank_8_1;
@@ -562,7 +564,6 @@ let rank_1_no_knight =
     Piece (Rook White);
   ]
 
-(* 上面的左边 e2e4 knight *)
 let legal_board_knight =
   [
     rank_8_1;
@@ -575,7 +576,6 @@ let legal_board_knight =
     rank_1_no_knight;
   ]
 
-(* 上下的左边 无rook *)
 let legal_board_rook =
   [
     rank_8_1;
@@ -586,6 +586,90 @@ let legal_board_rook =
     empty_ranks;
     rank_2_2;
     rank_1_1;
+  ]
+
+let rank_1_castling =
+  [
+    Board.Piece (Rook White);
+    Empty;
+    Empty;
+    Empty;
+    Piece (King White);
+    Empty;
+    Empty;
+    Piece (Rook White);
+  ]
+
+let rank_2_castling =
+  [
+    Board.Piece (Pawn White);
+    Piece (Pawn White);
+    Piece (Pawn White);
+    Board.Empty;
+    Board.Empty;
+    Piece (Pawn White);
+    Piece (Pawn White);
+    Piece (Pawn White);
+  ]
+
+let rank_7_castling =
+  [
+    Board.Piece (Pawn Black);
+    Piece (Pawn Black);
+    Piece (Pawn Black);
+    Empty;
+    Empty;
+    Piece (Pawn Black);
+    Piece (Pawn Black);
+    Piece (Pawn Black);
+  ]
+
+let rank_8_castling =
+  [
+    Board.Piece (Rook Black);
+    Empty;
+    Empty;
+    Empty;
+    Piece (King Black);
+    Empty;
+    Empty;
+    Piece (Rook Black);
+  ]
+
+let board_castling =
+  [
+    rank_8_castling;
+    rank_7_castling;
+    empty_ranks;
+    empty_ranks;
+    empty_ranks;
+    empty_ranks;
+    rank_2_castling;
+    rank_1_castling;
+  ]
+
+let rank_1_castled =
+  [
+    Board.Piece (Rook White);
+    Empty;
+    Empty;
+    Empty;
+    Empty;
+    Piece (Rook White);
+    Piece (King White);
+    Empty;
+  ]
+
+let board_castled =
+  [
+    rank_8_castling;
+    rank_7_castling;
+    empty_ranks;
+    empty_ranks;
+    empty_ranks;
+    empty_ranks;
+    rank_2_castling;
+    rank_1_castled;
   ]
 
 let board_tests =
@@ -631,6 +715,8 @@ let movement_tests =
       legal_board_2;
     move_test "move rook " legal_board_3 Player.White [ 1; 7; 2; 5 ]
       legal_board_knight;
+    move_test "try castling " board_castling Player.White [ 4; 7; 6; 7 ]
+      board_castled;
   ]
 
 let player_tests =
