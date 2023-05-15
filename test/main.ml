@@ -326,32 +326,57 @@ let start_state = State.init_state ()
 let state_1 = get_state (State.make_move start_state [ 4; 6; 4; 5 ])
 
 let state_black_capture : State.state =
-  get_state
-    (State.make_move
-       (get_state
-          (State.make_move
-             (get_state
-                (State.make_move
-                   (get_state (State.make_move start_state [ 4; 6; 4; 4 ]))
-                   [ 4; 1; 4; 3 ]))
-             [ 5; 6; 5; 4 ]))
-       [ 4; 3; 5; 4 ])
+  start_state
+  |> (fun state -> State.make_move state [ 4; 6; 4; 4 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 4; 1; 4; 3 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 5; 6; 5; 4 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 4; 3; 5; 4 ])
+  |> get_state
 
 let state_white_capture : State.state =
-  get_state
-    (State.make_move
-       (get_state
-          (State.make_move
-             (get_state
-                (State.make_move
-                   (get_state
-                      (State.make_move
-                         (get_state
-                            (State.make_move state_black_capture [ 5; 7; 2; 4 ]))
-                         [ 3; 0; 7; 4 ]))
-                   [ 4; 7; 5; 7 ]))
-             [ 1; 1; 1; 3 ]))
-       [ 2; 4; 1; 3 ])
+  state_black_capture
+  |> (fun state -> State.make_move state [ 5; 7; 2; 4 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 3; 0; 7; 4 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 4; 7; 5; 7 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 1; 1; 1; 3 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 2; 4; 1; 3 ])
+  |> get_state
+
+let state_black_capture_2 : State.state =
+  state_white_capture
+  |> (fun state -> State.make_move state [ 6; 0; 5; 2 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 6; 7; 5; 5 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 7; 4; 7; 2 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 3; 6; 3; 5 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 5; 2; 7; 3 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 5; 5; 7; 4 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 7; 2; 6; 3 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 7; 4; 5; 3 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 2; 1; 2; 2 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 6; 6; 6; 4 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 7; 3; 5; 2 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 7; 7; 6; 7 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 2; 2; 1; 3 ])
+  |> get_state
 
 let get_undone un =
   match un with
@@ -404,9 +429,9 @@ let state_tests =
     black_capture_test "black capture none" start_state [];
     black_capture_test "black captured one" state_black_capture [ Pawn White ];
     white_capture_test "white captured one" state_white_capture [ Pawn Black ];
+    black_capture_test "black capture two pawns" state_black_capture_2
+      [ Pawn White; Bishop White ];
     undo_test "undo start board" start_state Undo_Fail;
-    (* undo_test "undo one move (only took one move)" state_1 (Undone
-       start_state); *)
     redo_test "redo start board" start_state Redo_Fail;
     has_legal_moves_test "start game has legal moves " start_state true;
     has_legal_moves_test "after one move the game still has legal moves "
