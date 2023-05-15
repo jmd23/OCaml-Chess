@@ -325,6 +325,19 @@ let stalemate_board =
 let start_state = State.init_state ()
 let state_1 = get_state (State.make_move start_state [ 4; 6; 4; 5 ])
 
+let state_fool_mate : State.state =
+  start_state
+  |> (fun state -> State.make_move state [ 4; 6; 4; 4 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 6; 1; 6; 3 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 1; 7; 2; 5 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 5; 1; 5; 3 ])
+  |> get_state
+  |> (fun state -> State.make_move state [ 3; 7; 7; 3 ])
+  |> get_state
+
 let state_black_capture : State.state =
   start_state
   |> (fun state -> State.make_move state [ 4; 6; 4; 4 ])
@@ -416,6 +429,8 @@ let state_tests =
       start_state;
     make_move_illegalmove_test "black is in check, must move out of it"
       [ 0; 1; 0; 2 ] state_black_in_check;
+    make_move_illegalmove_test "move from empty spot" [ 4; 6; 4; 4 ]
+      state_fool_mate;
     make_move_illegalpiece_test "illegal piece from e8 to e3" [ 4; 0; 4; 5 ]
       start_state;
     move_one_legal_compare "make one legal move: e2 to e4" [ 4; 6; 4; 4 ]
@@ -424,6 +439,13 @@ let state_tests =
       [ 4; 1; 4; 3 ] state_1;
     move_two_legal_compare "make two legal moves: e2->e4 then e7->e5"
       [ 4; 6; 4; 4 ] [ 4; 1; 4; 3 ] start_state;
+    move_two_legal_compare
+      "make two legal moves to one white knight and one black pawn"
+      [ 1; 7; 0; 5 ] [ 4; 1; 4; 3 ] start_state;
+    move_two_legal_compare "make two legal moves after one capture"
+      [ 5; 7; 2; 4 ] [ 3; 0; 7; 4 ] state_black_capture;
+    move_two_legal_compare "make two legal moves: e2->e4 then e7->e5"
+      [ 6; 0; 5; 2 ] [ 6; 7; 5; 5 ] state_white_capture;
     white_capture_test "white capture none" start_state [];
     black_capture_test "black capture none" start_state [];
     black_capture_test "black captured one" state_black_capture [ Pawn White ];
@@ -443,6 +465,7 @@ let state_tests =
       state_1 true;
     has_legal_moves_test "white is in checkmate, has no legal moves "
       state_no_legals false;
+    has_legal_moves_test "fool mate endgame" state_fool_mate false;
     is_in_check_test "white is in check" state_no_legals true;
     is_in_check_test "black is in check" state_black_in_check true;
     is_in_check_test "after one move, neither player is in check" state_1 false;
@@ -787,6 +810,8 @@ let piece_tests =
       false;
     king_valid_test "invalid king move" start_board Player.White [ 4; 7; 3; 5 ]
       false;
+    king_valid_test "try castling valid move " board_castling Player.White
+      [ 4; 7; 6; 7 ] true;
     king_valid_test
       "should not be a valid move in state (result in a check), but should\n\
       \    pass the king movement check" stalemate_board Player.Black
