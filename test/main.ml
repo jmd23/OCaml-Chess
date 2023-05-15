@@ -30,7 +30,7 @@
   the basic piece functionality, and simplie move sequences work (automatic
   testing), and longer games and move sequences also work (manual testing), we
   can be fairly confident our chess system is robust and will behaive as
-  expected, no matter the input. There may still be bugs, but these do not
+  expected, no matter the input. There may still be bugs, but they do not
   strongly affect gameplay. *)
 
 open OUnit2
