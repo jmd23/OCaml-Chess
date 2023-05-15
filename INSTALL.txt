@@ -3,5 +3,5 @@ follow the directions in the textbook to install OPAM and create a switch, with
 the OCaml compiler. (Textbook Link: https://cs3110.github.io/textbook/cover.html)
 
 Navigate to the main directory, then run make build, followed by make play, 
-to see the user interface for the game. You will enter moves such as "e2 e4"
+to see the user interface for the game. You will enter moves such as "move e2 e4"
 to move the pieces, or "quit" to exit the game.
