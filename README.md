@@ -1,4 +1,4 @@
-# OCaml Chess
+# OCaml Chess (3110 Final Project)
 
 Josh De Leeuw (jmd496)
 Emmanuel Dodoo, end25
